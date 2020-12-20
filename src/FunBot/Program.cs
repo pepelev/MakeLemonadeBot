@@ -19,7 +19,7 @@ namespace FunBot
         static string[] Scopes = { SheetsService.Scope.SpreadsheetsReadonly };
         static string ApplicationName = "FunBot";
 
-        static async Task Main(string[] args)
+        static async Task Main2(string[] args)
         {
             var connection = new SQLiteConnection("Data Source = fun-bot.sqlite; Version = 3;");
             connection.Open();

@@ -1,0 +1,35 @@
+{
+  "telegram": {
+    "token": "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
+  },
+  "sources": {
+    "movies": {
+      "spreadsheetId": "14ifqtgl_BGIDeWO6ji_xhb-8t5odh9f-Y0Rx7zm5ORE",
+      "sheet": "кино"
+    },
+    "books": {
+      "spreadsheetId": "14ifqtgl_BGIDeWO6ji_xhb-8t5odh9f-Y0Rx7zm5ORE",
+      "sheet": "книги"
+    },
+    "serials": {
+      "spreadsheetId": "14ifqtgl_BGIDeWO6ji_xhb-8t5odh9f-Y0Rx7zm5ORE",
+      "sheet": "сериалы"
+    },
+    "cartoons": {
+      "spreadsheetId": "14ifqtgl_BGIDeWO6ji_xhb-8t5odh9f-Y0Rx7zm5ORE",
+      "sheet": "мультфильмы"
+    },
+    "sundry": {
+      "spreadsheetId": "14ifqtgl_BGIDeWO6ji_xhb-8t5odh9f-Y0Rx7zm5ORE",
+      "sheet": "кладовка"
+    }
+  },
+  "users": {
+    "11111111": {
+      "dailyBudget": 10
+    },
+    "others": {
+      "dailyBudget": 5 
+    }
+  }
+}

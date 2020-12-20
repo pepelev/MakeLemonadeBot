@@ -1,59 +1,76 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Telegram.Bot;
-using Telegram.Bot.Types.ReplyMarkups;
+using Newtonsoft.Json.Linq;
 
 namespace FunBot.Conversation
 {
     public sealed class SerialSelection : State
     {
-        private readonly ITelegramBotClient client;
-        private readonly long chatId;
         private readonly int queriesLeft;
+        private readonly Content.Collection @long;
+        private readonly Content.Collection @short;
+        private readonly Talk talk;
+        private readonly State back;
+        private readonly State next;
 
-        public SerialSelection(ITelegramBotClient client, long chatId, int queriesLeft)
+        public SerialSelection(
+            Talk talk,
+            Content.Collection @short,
+            Content.Collection @long,
+            State back,
+            State next,
+            int queriesLeft)
         {
-            this.client = client;
-            this.chatId = chatId;
+            this.talk = talk;
+            this.@short = @short;
+            this.@long = @long;
+            this.back = back;
+            this.next = next;
             this.queriesLeft = queriesLeft;
         }
 
+        public override DateTime ExpiresAt => Expires.Never;
+
         public override async Task<State> RespondAsync(string query)
         {
-            switch (query.ToLowerInvariant())
-            {
-                case "длинные":
-                    await SendAsync("Держи длинный сериал");
-                    return new Selection(client, chatId, queriesLeft - 1);
-                case "короткие":
-                    await SendAsync("Держи короткий сериал");
-                    return new Selection(client, chatId, queriesLeft - 1);
-                default:
-                    await SendAsync("не понял тебя");
-                    return new Selection(client, chatId, queriesLeft);
-            }
-        }
-
-        private async Task SendAsync(string text)
-        {
-            await client.SendTextMessageAsync(
-                chatId,
-                text,
-                replyMarkup: new ReplyKeyboardMarkup(
-                    new[]
-                    {
-                        new KeyboardButton("Кино"),
-                        new KeyboardButton("Сериалы"),
-                        new KeyboardButton("Книги"),
-                        new KeyboardButton("Кладовая"),
-                        new KeyboardButton("Написать нам")
-                    }
+            var interaction = new Matching<string, State>(
+                "длинный",
+                StringComparer.InvariantCultureIgnoreCase,
+                new WithoutArgument<string, State>(
+                    new Show(
+                        @long,
+                        talk,
+                        back,
+                        next
+                    )
+                ),
+                new Matching<string, State>(
+                    "короткий",
+                    StringComparer.InvariantCultureIgnoreCase,
+                    new WithoutArgument<string, State>(
+                        new Show(
+                            @short,
+                            talk,
+                            back,
+                            next
+                        )
+                    ),
+                    new WithoutArgument<string, State>(
+                        new Misunderstanding(
+                            talk,
+                            back
+                        )
+                    )
                 )
             );
+            return await interaction.RunAsync(query);
         }
 
         public override Task<State> ExpireAsync() => Task.FromResult<State>(this);
-        public override DateTime ExpiresAt => Expires.Never;
-        public override byte[] Serialize() => new byte[] { 0x01 };
+
+        public override JObject Serialize() => new JObject(
+            new JProperty("type", "serialSelection"),
+            new JProperty("queriesLeft", queriesLeft)
+        );
     }
 }

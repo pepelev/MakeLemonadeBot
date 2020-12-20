@@ -7,6 +7,11 @@ namespace FunBot
     {
         private readonly IList<object> cells;
 
+        public Row(params object[] cells)
+            : this(cells as IList<object>)
+        {
+        }
+
         public Row(IList<object> cells)
         {
             this.cells = cells;
@@ -39,7 +44,7 @@ namespace FunBot
             return false;
         }
 
-        public string Get(Location location) => cells[location.Index].ToString();
+        public string Get(Location location) => cells[location.Index].ToString().Trim();
 
         public string? TryGet(Location location) => Has(location)
             ? Get(location)
