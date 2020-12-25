@@ -44,7 +44,7 @@ namespace FunBot.Communication
             "Я передумал"
         );
 
-        public override Conversation Welcome() => new Welcome(
+        public override Conversation Greeting() => new Greeting(
             talks.For(chatId, FullKeyboard),
             this
         );

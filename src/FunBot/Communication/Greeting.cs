@@ -4,12 +4,12 @@ using Newtonsoft.Json.Linq;
 
 namespace FunBot.Communication
 {
-    public sealed class Welcome : Conversation
+    public sealed class Greeting : Conversation
     {
         private readonly Factory factory;
         private readonly Talk talk;
 
-        public Welcome(Talk talk, Factory factory)
+        public Greeting(Talk talk, Factory factory)
         {
             this.talk = talk;
             this.factory = factory;

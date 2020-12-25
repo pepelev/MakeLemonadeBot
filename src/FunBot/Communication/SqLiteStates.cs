@@ -33,7 +33,7 @@ namespace FunBot.Communication
 
             if (content == null)
             {
-                return Factory(chatId).Welcome();
+                return Factory(chatId).Greeting();
             }
 
             return State(chatId, content);
@@ -87,7 +87,7 @@ namespace FunBot.Communication
                 var type = json.Get<string>("type");
                 return type switch
                 {
-                    "welcome" => factory.Welcome(),
+                    "welcome" => factory.Greeting(),
                     "selection" => Selection(json),
                     "serialSelection" => SerialSelection(json),
                     "feedback" => factory.Feedback(

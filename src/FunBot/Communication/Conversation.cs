@@ -14,7 +14,7 @@ namespace FunBot.Communication
 
         public abstract class Factory
         {
-            public abstract Conversation Welcome();
+            public abstract Conversation Greeting();
             public abstract Conversation Selection(int queriesLeft);
             public abstract Conversation SerialSelection(int queriesLeft);
             public abstract Conversation Feedback(Conversation from);
