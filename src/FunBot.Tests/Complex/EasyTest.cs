@@ -226,5 +226,16 @@ namespace FunBot.Tests.Complex
 
             replies.Single().Should().NotBe("На сегодня это все, приходи завтра");
         }
+
+        [Test]
+        public async Task Misunderstanding_On_Unknown_Query_When_There_Is_No_Queries_Left()
+        {
+            await context.FeedAsync("/hello");
+            await context.FeedAsync(5, "кино");
+
+            var replies = await context.FeedAsync("123");
+
+            replies.Should().BeEquivalentTo("Я не понял тебя");
+        }
     }
 }

@@ -98,30 +98,25 @@ namespace FunBot.Communication
                             Feedback(new LazyConversation(() => Selection(queriesLeft)))
                         )
                     ),
-                    new Limited<string>(
-                        queriesLeft,
-                        talk,
-                        new LazyConversation(() => Selection(0)),
-                        new Matching<string, Conversation>(
-                            "Сериалы",
-                            StringComparer.CurrentCultureIgnoreCase,
-                            new WithoutArgument<string, Conversation>(
-                                new SerialSelectionDialogue(serialSelectionTalk, new LazyConversation(() => SerialSelection(queriesLeft)))
+                    new Matching<string, Conversation>(
+                        "Сериалы",
+                        StringComparer.CurrentCultureIgnoreCase,
+                        new WithoutArgument<string, Conversation>(
+                            new SerialSelectionDialogue(serialSelectionTalk, new LazyConversation(() => SerialSelection(queriesLeft)))
+                        ),
+                        new Commands(
+                            ImmutableStack.CreateRange(
+                                new (string Command, Content.Collection Collection)[]
+                                {
+                                    ("кино", new Movies(chatId, connection, random, clock)),
+                                    ("книги", new Books(chatId, connection, random, clock))
+                                }
                             ),
-                            new Commands(
-                                ImmutableStack.CreateRange(
-                                    new (string Command, Content.Collection Collection)[]
-                                    {
-                                        ("кино", new Movies(chatId, connection, random, clock)),
-                                        ("книги", new Books(chatId, connection, random, clock))
-                                    }
-                                ),
-                                conversation,
-                                new LazyConversation(() => Selection(queriesLeft - 1)),
-                                new LazyConversation(() => Selection(0)),
-                                talk,
-                                queriesLeft
-                            )
+                            this,
+                            new LazyConversation(() => Selection(queriesLeft - 1)),
+                            new LazyConversation(() => Selection(0)),
+                            talk,
+                            queriesLeft
                         )
                     )
                 )
