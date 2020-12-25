@@ -15,12 +15,17 @@ namespace FunBot.Configuration
                 this.@object = @object;
             }
 
-            public override Configuration.User Get(int chatId)
+            public override Configuration.User Get(long chatId)
             {
                 var propertyName = chatId.ToString(CultureInfo.InvariantCulture);
                 if (@object.ContainsKey(propertyName))
                 {
                     return new User(@object.Get<JObject>(propertyName));
+                }
+
+                if (@object.ContainsKey("others"))
+                {
+                    return new User(@object.Get<JObject>("others"));
                 }
 
                 return new ConstUser(5);

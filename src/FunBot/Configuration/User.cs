@@ -6,7 +6,7 @@
 
         public abstract class Collection
         {
-            public abstract User Get(int chatId);
+            public abstract User Get(long chatId);
         }
     }
 }

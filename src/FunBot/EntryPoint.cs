@@ -67,7 +67,7 @@ namespace FunBot
             var client = new TelegramBotClient(telegramToken);
             var talks = new TelegramTalks(client);
             var clock = new Utc();
-            Conversation.Collection states = new SqLiteStates(connection, talks, clock);
+            Conversation.Collection states = new SqLiteStates(connection, talks, clock, settings.Users);
             Offset offset = new SqLiteOffset(telegramToken, connection);
 
             using var @lock = new SemaphoreSlim(1, 1);

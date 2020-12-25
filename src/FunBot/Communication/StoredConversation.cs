@@ -2,6 +2,7 @@
 using System.Collections.Immutable;
 using System.Data.SQLite;
 using System.Threading.Tasks;
+using FunBot.Configuration;
 using FunBot.Json;
 using Newtonsoft.Json.Linq;
 
@@ -16,6 +17,7 @@ namespace FunBot.Communication
         private readonly JObject @object;
         private readonly Random random;
         private readonly Talk.Collection talks;
+        private readonly User user;
 
         public StoredConversation(
             long chatId,
@@ -23,6 +25,7 @@ namespace FunBot.Communication
             Clock clock,
             SQLiteConnection connection,
             Random random,
+            User user,
             JObject @object)
         {
             this.chatId = chatId;
@@ -31,6 +34,7 @@ namespace FunBot.Communication
             this.connection = connection;
             this.random = random;
             this.@object = @object;
+            this.user = user;
             conversation = new LazyConversation(Parse);
         }
 
@@ -42,6 +46,7 @@ namespace FunBot.Communication
             clock,
             connection,
             random,
+            user,
             @object.Get<JObject>(propertyName)
         );
 
@@ -52,7 +57,7 @@ namespace FunBot.Communication
             {
                 "greeting" => new Greeting(
                     talks.For(chatId, FullKeyboard),
-                    new LazyConversation(() => Selection(5))
+                    new LazyConversation(() => Selection(user.DailyBudget))
                 ),
                 "selection" => Selection(),
                 "serialSelection" => SerialSelection(),
@@ -119,7 +124,8 @@ namespace FunBot.Communication
                             queriesLeft
                         )
                     )
-                )
+                ),
+                user
             );
         }
 

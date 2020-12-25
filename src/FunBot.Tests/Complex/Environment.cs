@@ -6,7 +6,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FunBot.Communication;
+using FunBot.Configuration;
 using FunBot.Jobs;
+using Newtonsoft.Json.Linq;
 
 namespace FunBot.Tests.Complex
 {
@@ -28,7 +30,16 @@ namespace FunBot.Tests.Complex
             this.connection = connection;
             talks = new Talks(chatId);
             clock = new TestClock(start);
-            states = new SqLiteStates(connection, talks, clock);
+            states = new SqLiteStates(
+                connection,
+                talks,
+                clock,
+                new JsonSettings(
+                    new JObject(
+                        new JProperty("users", new JObject())
+                    )
+                ).Users
+            );
             source = new Source(this, chatId);
             sut = new Listening(
                 states,

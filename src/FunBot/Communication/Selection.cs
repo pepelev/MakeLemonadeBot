@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using FunBot.Configuration;
 using Newtonsoft.Json.Linq;
 
 namespace FunBot.Communication
@@ -9,21 +10,26 @@ namespace FunBot.Communication
         private readonly Conversation expiredConversation;
         private readonly Interaction<string, Conversation> interaction;
         private readonly int queriesLeft;
+        private readonly User user;
         private readonly DateTime timestamp;
 
         public Selection(
             DateTime timestamp,
             int queriesLeft,
             Conversation expiredConversation,
-            Interaction<string, Conversation> interaction)
+            Interaction<string, Conversation> interaction,
+            User user)
         {
             this.timestamp = timestamp;
             this.queriesLeft = queriesLeft;
             this.expiredConversation = expiredConversation;
             this.interaction = interaction;
+            this.user = user;
         }
 
-        public override DateTime AskAt => timestamp.Date + new TimeSpan(TimeSpan.TicksPerDay);
+        public override DateTime AskAt => user.DailyBudget > queriesLeft
+            ? timestamp.Date + new TimeSpan(TimeSpan.TicksPerDay)
+            : Ask.Never;
 
         public override async Task<Conversation> AnswerAsync(string query)
         {

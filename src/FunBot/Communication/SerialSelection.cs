@@ -29,7 +29,7 @@ namespace FunBot.Communication
             this.queriesLeft = queriesLeft;
         }
 
-        public override DateTime AskAt => Expires.Never;
+        public override DateTime AskAt => Ask.Never;
 
         public override async Task<Conversation> AnswerAsync(string query)
         {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
+using FunBot.Configuration;
 using FunBot.Json;
 using FunBot.Storage;
 
@@ -9,16 +10,22 @@ namespace FunBot.Communication
 {
     public sealed class SqLiteStates : Conversation.Collection
     {
-        private readonly SQLiteConnection connection;
-        private readonly Talk.Collection talks;
         private readonly Clock clock;
+        private readonly SQLiteConnection connection;
         private readonly Random random = new Random();
+        private readonly Talk.Collection talks;
+        private readonly User.Collection users;
 
-        public SqLiteStates(SQLiteConnection connection, Talk.Collection talks, Clock clock)
+        public SqLiteStates(
+            SQLiteConnection connection,
+            Talk.Collection talks,
+            Clock clock,
+            User.Collection users)
         {
             this.connection = connection;
             this.talks = talks;
             this.clock = clock;
+            this.users = users;
         }
 
         public override Conversation Get(long chatId)
@@ -71,6 +78,7 @@ namespace FunBot.Communication
                 clock,
                 connection,
                 random,
+                users.Get(chatId),
                 @object
             );
         }

@@ -29,7 +29,7 @@ namespace FunBot.Communication
         }
 
         public override Task<Conversation> AskAsync() => Task.FromResult<Conversation>(this);
-        public override DateTime AskAt => Expires.Never;
+        public override DateTime AskAt => Ask.Never;
 
         public override JObject Serialize() => new JObject(
             new JProperty("type", "feedback"),
