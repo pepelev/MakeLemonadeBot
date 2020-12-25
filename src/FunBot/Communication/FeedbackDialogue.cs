@@ -2,21 +2,21 @@
 
 namespace FunBot.Communication
 {
-    public sealed class FeedbackDialogue : Interaction<None, State>
+    public sealed class FeedbackDialogue : Interaction<None, Conversation>
     {
         private readonly Talk talk;
-        private readonly State state;
+        private readonly Conversation conversation;
 
-        public FeedbackDialogue(Talk talk, State state)
+        public FeedbackDialogue(Talk talk, Conversation conversation)
         {
             this.talk = talk;
-            this.state = state;
+            this.conversation = conversation;
         }
 
-        public override async Task<State> RunAsync(None query)
+        public override async Task<Conversation> RunAsync(None query)
         {
             await talk.SayAsync("Расскажи мне, что ты обо мне думаешь");
-            return state;
+            return conversation;
         }
     }
 }

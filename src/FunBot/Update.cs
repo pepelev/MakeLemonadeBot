@@ -5,6 +5,6 @@ namespace FunBot
     public abstract class Update
     {
         public abstract string Text { get; }
-        public abstract State Subject { get; }
+        public abstract Conversation Subject { get; }
     }
 }

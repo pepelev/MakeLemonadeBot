@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 
 namespace FunBot.Communication
 {
-    public sealed class Welcome : State
+    public sealed class Welcome : Conversation
     {
         private readonly Factory factory;
         private readonly Talk talk;
@@ -15,15 +15,15 @@ namespace FunBot.Communication
             this.factory = factory;
         }
 
-        public override DateTime ExpiresAt => Expires.Never;
+        public override DateTime AskAt => Expires.Never;
 
-        public override async Task<State> RespondAsync(string query)
+        public override async Task<Conversation> AnswerAsync(string query)
         {
             await talk.SayAsync("Привет, это отличный бот");
             return factory.Selection(5);
         }
 
-        public override Task<State> ExpireAsync() => Task.FromResult<State>(this);
+        public override Task<Conversation> AskAsync() => Task.FromResult<Conversation>(this);
 
         public override JObject Serialize() => new JObject(
             new JProperty("type", "welcome")

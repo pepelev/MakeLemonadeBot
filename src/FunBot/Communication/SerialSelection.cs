@@ -4,21 +4,21 @@ using Newtonsoft.Json.Linq;
 
 namespace FunBot.Communication
 {
-    public sealed class SerialSelection : State
+    public sealed class SerialSelection : Conversation
     {
         private readonly int queriesLeft;
         private readonly Content.Collection @long;
         private readonly Content.Collection @short;
         private readonly Talk talk;
-        private readonly State back;
-        private readonly State next;
+        private readonly Conversation back;
+        private readonly Conversation next;
 
         public SerialSelection(
             Talk talk,
             Content.Collection @short,
             Content.Collection @long,
-            State back,
-            State next,
+            Conversation back,
+            Conversation next,
             int queriesLeft)
         {
             this.talk = talk;
@@ -29,14 +29,14 @@ namespace FunBot.Communication
             this.queriesLeft = queriesLeft;
         }
 
-        public override DateTime ExpiresAt => Expires.Never;
+        public override DateTime AskAt => Expires.Never;
 
-        public override async Task<State> RespondAsync(string query)
+        public override async Task<Conversation> AnswerAsync(string query)
         {
-            var interaction = new Matching<string, State>(
+            var interaction = new Matching<string, Conversation>(
                 "длинный",
                 StringComparer.InvariantCultureIgnoreCase,
-                new WithoutArgument<string, State>(
+                new WithoutArgument<string, Conversation>(
                     new Show(
                         @long,
                         talk,
@@ -44,10 +44,10 @@ namespace FunBot.Communication
                         next
                     )
                 ),
-                new Matching<string, State>(
+                new Matching<string, Conversation>(
                     "короткий",
                     StringComparer.InvariantCultureIgnoreCase,
-                    new WithoutArgument<string, State>(
+                    new WithoutArgument<string, Conversation>(
                         new Show(
                             @short,
                             talk,
@@ -55,7 +55,7 @@ namespace FunBot.Communication
                             next
                         )
                     ),
-                    new WithoutArgument<string, State>(
+                    new WithoutArgument<string, Conversation>(
                         new Misunderstanding(
                             talk,
                             back
@@ -66,7 +66,7 @@ namespace FunBot.Communication
             return await interaction.RunAsync(query);
         }
 
-        public override Task<State> ExpireAsync() => Task.FromResult<State>(this);
+        public override Task<Conversation> AskAsync() => Task.FromResult<Conversation>(this);
 
         public override JObject Serialize() => new JObject(
             new JProperty("type", "serialSelection"),

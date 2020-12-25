@@ -4,18 +4,18 @@ using Newtonsoft.Json.Linq;
 
 namespace FunBot.Communication
 {
-    public sealed class Feedback : State
+    public sealed class Feedback : Conversation
     {
         private readonly Talk talk;
-        private readonly State back;
+        private readonly Conversation back;
 
-        public Feedback(Talk talk, State back)
+        public Feedback(Talk talk, Conversation back)
         {
             this.back = back;
             this.talk = talk;
         }
 
-        public override async Task<State> RespondAsync(string query)
+        public override async Task<Conversation> AnswerAsync(string query)
         {
             if (query.ToLowerInvariant() == "я передумал")
             {
@@ -28,8 +28,8 @@ namespace FunBot.Communication
             return back;
         }
 
-        public override Task<State> ExpireAsync() => Task.FromResult<State>(this);
-        public override DateTime ExpiresAt => Expires.Never;
+        public override Task<Conversation> AskAsync() => Task.FromResult<Conversation>(this);
+        public override DateTime AskAt => Expires.Never;
 
         public override JObject Serialize() => new JObject(
             new JProperty("type", "feedback"),

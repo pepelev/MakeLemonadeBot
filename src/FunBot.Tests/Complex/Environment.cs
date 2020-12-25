@@ -14,7 +14,7 @@ namespace FunBot.Tests.Complex
     {
         private readonly Talks talks;
         private readonly SQLiteConnection connection;
-        private readonly State.Collection states;
+        private readonly Conversation.Collection states;
         private string BotToken => "someBotToken";
         private readonly Source source;
         private readonly Job sut;

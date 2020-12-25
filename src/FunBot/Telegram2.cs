@@ -15,14 +15,14 @@ namespace FunBot
         private readonly ITelegramBotClient client;
         private readonly SQLiteConnection connection;
         private readonly Offset offset;
-        private readonly State.Collection states;
+        private readonly Conversation.Collection states;
 
         public Telegram2(
             string botToken,
             ITelegramBotClient client,
             SQLiteConnection connection,
             Offset offset,
-            State.Collection states)
+            Conversation.Collection states)
         {
             this.botToken = botToken;
             this.client = client;

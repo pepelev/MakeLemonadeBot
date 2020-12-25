@@ -32,14 +32,14 @@ namespace FunBot
     public sealed class TelegramUpdate : Update
     {
         private readonly SQLiteConnection connection;
-        private readonly State.Collection states;
+        private readonly Conversation.Collection states;
         private readonly Message message;
         private readonly string token;
 
         public TelegramUpdate(
             Message message,
             SQLiteConnection connection,
-            State.Collection states,
+            Conversation.Collection states,
             string token)
         {
             this.message = message;
@@ -49,17 +49,17 @@ namespace FunBot
         }
 
         public override string Text => message.Text;
-        public override State Subject => new StoringState(this, states.Get(message.ChatId));
+        public override Conversation Subject => new StoringConversation(this, states.Get(message.ChatId));
 
-        private void Store(State state)
+        private void Store(Conversation conversation)
         {
             using var transaction = connection.BeginTransaction();
             transaction.Execute(@"
                 REPLACE INTO states (chat_id, content, expires_at)
                 VALUES (:chat_id, :content, :expires_at)",
                 ("chat_id", message.ChatId),
-                ("content", state.Serialize().AsString()),
-                ("expires_at", state.ExpiresAt)
+                ("content", conversation.Serialize().AsString()),
+                ("expires_at", conversation.AskAt)
             );
             transaction.Execute(@"
                 REPLACE INTO offsets (token, value)
@@ -70,33 +70,33 @@ namespace FunBot
             transaction.Commit();
         }
 
-        private sealed class StoringState : State
+        private sealed class StoringConversation : Conversation
         {
             private readonly TelegramUpdate update;
-            private readonly State state;
+            private readonly Conversation conversation;
 
-            public StoringState(TelegramUpdate update, State state)
+            public StoringConversation(TelegramUpdate update, Conversation conversation)
             {
                 this.update = update;
-                this.state = state;
+                this.conversation = conversation;
             }
 
-            public override async Task<State> RespondAsync(string query)
+            public override async Task<Conversation> AnswerAsync(string query)
             {
-                var result = await state.RespondAsync(query);
+                var result = await conversation.AnswerAsync(query);
                 update.Store(result);
                 return result;
             }
 
-            public override async Task<State> ExpireAsync()
+            public override async Task<Conversation> AskAsync()
             {
-                var result = await state.ExpireAsync();
+                var result = await conversation.AskAsync();
                 update.Store(result);
                 return result;
             }
 
-            public override DateTime ExpiresAt => state.ExpiresAt;
-            public override JObject Serialize() => state.Serialize();
+            public override DateTime AskAt => conversation.AskAt;
+            public override JObject Serialize() => conversation.Serialize();
         }
     }
 }

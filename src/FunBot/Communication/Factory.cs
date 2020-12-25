@@ -4,7 +4,7 @@ using System.Data.SQLite;
 
 namespace FunBot.Communication
 {
-    public sealed class Factory : State.Factory
+    public sealed class Factory : Conversation.Factory
     {
         private readonly long chatId;
         private readonly Talk.Collection talks;
@@ -44,36 +44,36 @@ namespace FunBot.Communication
             "Я передумал"
         );
 
-        public override State Welcome() => new Welcome(
+        public override Conversation Welcome() => new Welcome(
             talks.For(chatId, FullKeyboard),
             this
         );
 
-        public override State Selection(int queriesLeft)
+        public override Conversation Selection(int queriesLeft)
         {
             var talk = talks.For(chatId, FullKeyboard);
             var serialSelectionTalk = talks.For(chatId, SerialKeyboard);
             return new Selection(
                 clock.Now,
                 queriesLeft,
-                new LazyState(() => Selection(5)),
-                new Matching<string, State>(
+                new LazyConversation(() => Selection(5)),
+                new Matching<string, Conversation>(
                     "Написать нам",
                     StringComparer.CurrentCultureIgnoreCase,
-                    new WithoutArgument<string, State>(
+                    new WithoutArgument<string, Conversation>(
                         new FeedbackDialogue(
                             talks.For(chatId, FeedbackKeyboard),
-                            Feedback(new LazyState(() => Selection(queriesLeft)))
+                            Feedback(new LazyConversation(() => Selection(queriesLeft)))
                         )
                     ),
                     new Limited<string>(
                         queriesLeft,
                         talk,
                         this,
-                        new Matching<string, State>(
+                        new Matching<string, Conversation>(
                             "Сериалы",
                             StringComparer.CurrentCultureIgnoreCase,
-                            new WithoutArgument<string, State>(
+                            new WithoutArgument<string, Conversation>(
                                 new SerialSelectionDialogue(this, serialSelectionTalk, queriesLeft)
                             ),
                             new Commands(
@@ -94,19 +94,19 @@ namespace FunBot.Communication
             );
         }
 
-        public override State SerialSelection(int queriesLeft)
+        public override Conversation SerialSelection(int queriesLeft)
         {
             return new SerialSelection(
                 talks.For(chatId, FullKeyboard),
                 new Serials(chatId, SerialDuration.Short, connection, random, clock),
                 new Serials(chatId, SerialDuration.Long, connection, random, clock),
-                new LazyState(() => Selection(queriesLeft)),
-                new LazyState(() => Selection(Math.Max(0, queriesLeft - 1))),
+                new LazyConversation(() => Selection(queriesLeft)),
+                new LazyConversation(() => Selection(Math.Max(0, queriesLeft - 1))),
                 queriesLeft
             );
         }
 
-        public override State Feedback(State from) => new Feedback(
+        public override Conversation Feedback(Conversation from) => new Feedback(
             talks.For(chatId, FullKeyboard),
             @from
         );

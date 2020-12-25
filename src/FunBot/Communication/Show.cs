@@ -2,14 +2,14 @@
 
 namespace FunBot.Communication
 {
-    public sealed class Show : Interaction<None, State>
+    public sealed class Show : Interaction<None, Conversation>
     {
         private readonly Content.Collection collection;
         private readonly Talk talk;
-        private readonly State empty;
-        private readonly State shown;
+        private readonly Conversation empty;
+        private readonly Conversation shown;
 
-        public Show(Content.Collection collection, Talk talk, State empty, State shown)
+        public Show(Content.Collection collection, Talk talk, Conversation empty, Conversation shown)
         {
             this.collection = collection;
             this.talk = talk;
@@ -17,7 +17,7 @@ namespace FunBot.Communication
             this.shown = shown;
         }
 
-        public override async Task<State> RunAsync(None query)
+        public override async Task<Conversation> RunAsync(None query)
         {
             if (collection.Empty)
             {

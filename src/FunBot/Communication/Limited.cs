@@ -2,18 +2,18 @@
 
 namespace FunBot.Communication
 {
-    public sealed class Limited<In> : Interaction<In, State>
+    public sealed class Limited<In> : Interaction<In, Conversation>
     {
-        private readonly State.Factory factory;
+        private readonly Conversation.Factory factory;
         private readonly int queriesLeft;
         private readonly Talk talk;
-        private readonly Interaction<In, State> interaction;
+        private readonly Interaction<In, Conversation> interaction;
 
         public Limited(
             int queriesLeft,
             Talk talk,
-            State.Factory factory,
-            Interaction<In, State> interaction)
+            Conversation.Factory factory,
+            Interaction<In, Conversation> interaction)
         {
             this.queriesLeft = queriesLeft;
             this.talk = talk;
@@ -21,7 +21,7 @@ namespace FunBot.Communication
             this.interaction = interaction;
         }
 
-        public override async Task<State> RunAsync(In query)
+        public override async Task<Conversation> RunAsync(In query)
         {
             if (queriesLeft == 0)
             {

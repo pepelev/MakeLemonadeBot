@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 
 namespace FunBot.Communication
 {
-    public sealed class SqLiteStates : State.Collection
+    public sealed class SqLiteStates : Conversation.Collection
     {
         private readonly SQLiteConnection connection;
         private readonly Talk.Collection talks;
@@ -22,7 +22,7 @@ namespace FunBot.Communication
             this.clock = clock;
         }
 
-        public override State Get(long chatId)
+        public override Conversation Get(long chatId)
         {
             var content = connection.Read(@"
                 SELECT content FROM states
@@ -47,18 +47,18 @@ namespace FunBot.Communication
             clock
         );
 
-        public override void Update(long chatId, State state)
+        public override void Update(long chatId, Conversation conversation)
         {
             connection.Execute(@"
                 REPLACE INTO states (chat_id, content, expires_at)
                 VALUES (:chat_id, :content, :expires_at)",
                 ("chat_id", chatId),
-                ("content", state.Serialize().AsString()),
-                ("expires_at", state.ExpiresAt)
+                ("content", conversation.Serialize().AsString()),
+                ("expires_at", conversation.AskAt)
             );
         }
 
-        public override IReadOnlyCollection<(long ChatId, State State)> Expired()
+        public override IReadOnlyCollection<(long ChatId, Conversation State)> Questions()
         {
             var expired = connection.Read(@"
                 SELECT chat_id, content FROM states
@@ -76,13 +76,13 @@ namespace FunBot.Communication
             ).ToList();
         }
 
-        private State State(long chatId, string content)
+        private Conversation State(long chatId, string content)
         {
             var factory = Factory(chatId);
             var @object = content.AsJsonObject();
             return Parse(@object);
 
-            State Parse(JObject json)
+            Conversation Parse(JObject json)
             {
                 var type = json.Get<string>("type");
                 return type switch
@@ -96,13 +96,13 @@ namespace FunBot.Communication
                 };
             }
 
-            State Selection(JObject json)
+            Conversation Selection(JObject json)
             {
                 var left = json.Get<int>("queriesLeft");
                 return factory.Selection(left);
             }
 
-            State SerialSelection(JObject json)
+            Conversation SerialSelection(JObject json)
             {
                 var left = json.Get<int>("queriesLeft");
                 return factory.SerialSelection(left);
