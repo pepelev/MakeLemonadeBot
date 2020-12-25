@@ -4,7 +4,6 @@ using System.Data.SQLite;
 using System.Linq;
 using FunBot.Json;
 using FunBot.Storage;
-using Newtonsoft.Json.Linq;
 
 namespace FunBot.Communication
 {
@@ -80,33 +79,7 @@ namespace FunBot.Communication
         {
             var factory = Factory(chatId);
             var @object = content.AsJsonObject();
-            return Parse(@object);
-
-            Conversation Parse(JObject json)
-            {
-                var type = json.Get<string>("type");
-                return type switch
-                {
-                    "welcome" => factory.Greeting(),
-                    "selection" => Selection(json),
-                    "serialSelection" => SerialSelection(json),
-                    "feedback" => factory.Feedback(
-                        Parse(json.Get<JObject>("from"))
-                    )
-                };
-            }
-
-            Conversation Selection(JObject json)
-            {
-                var left = json.Get<int>("queriesLeft");
-                return factory.Selection(left);
-            }
-
-            Conversation SerialSelection(JObject json)
-            {
-                var left = json.Get<int>("queriesLeft");
-                return factory.SerialSelection(left);
-            }
+            return new StoredConversation(factory, @object);
         }
     }
 }
