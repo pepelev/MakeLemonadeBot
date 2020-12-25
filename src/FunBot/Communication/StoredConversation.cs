@@ -7,8 +7,8 @@ namespace FunBot.Communication
 {
     public sealed class StoredConversation : Conversation
     {
-        private readonly Factory factory;
         private readonly Conversation conversation;
+        private readonly Factory factory;
         private readonly JObject @object;
 
         public StoredConversation(Factory factory, JObject @object)
@@ -23,32 +23,33 @@ namespace FunBot.Communication
         private Conversation Parse()
         {
             return Parse(@object);
+        }
 
-            Conversation Parse(JObject json)
+        private Conversation Parse(JObject json)
+        {
+            var type = json.Get<string>("type");
+            return type switch
             {
-                var type = json.Get<string>("type");
-                return type switch
-                {
-                    "welcome" => factory.Greeting(),
-                    "selection" => Selection(json),
-                    "serialSelection" => SerialSelection(json),
-                    "feedback" => factory.Feedback(
-                        Parse(json.Get<JObject>("from"))
-                    )
-                };
-            }
+                "welcome" => factory.Greeting(),
+                "selection" => Selection(json),
+                "serialSelection" => SerialSelection(json),
+                "feedback" => factory.Feedback(
+                    Parse(json.Get<JObject>("from"))
+                ),
+                _ => throw new Exception($"Could not parse {@object}")
+            };
+        }
 
-            Conversation Selection(JObject json)
-            {
-                var left = json.Get<int>("queriesLeft");
-                return factory.Selection(left);
-            }
+        private Conversation Selection(JObject json)
+        {
+            var left = json.Get<int>("queriesLeft");
+            return factory.Selection(left);
+        }
 
-            Conversation SerialSelection(JObject json)
-            {
-                var left = json.Get<int>("queriesLeft");
-                return factory.SerialSelection(left);
-            }
+        private Conversation SerialSelection(JObject json)
+        {
+            var left = json.Get<int>("queriesLeft");
+            return factory.SerialSelection(left);
         }
 
         public override async Task<Conversation> AnswerAsync(string query) =>
