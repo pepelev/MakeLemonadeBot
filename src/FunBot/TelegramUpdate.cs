@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data.SQLite;
 using System.Threading.Tasks;
-using FunBot.Conversation;
+using FunBot.Communication;
 using FunBot.Json;
 using FunBot.Storage;
 using Newtonsoft.Json.Linq;

@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-namespace FunBot.Conversation
+namespace FunBot.Communication
 {
     public sealed class Welcome : State
     {

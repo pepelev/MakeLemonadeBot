@@ -3,7 +3,7 @@ using System.Data.SQLite;
 using System.Threading;
 using System.Threading.Tasks;
 using FunBot.Collections;
-using FunBot.Conversation;
+using FunBot.Communication;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 

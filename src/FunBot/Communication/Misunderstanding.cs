@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace FunBot.Conversation
+namespace FunBot.Communication
 {
     public sealed class Misunderstanding : Interaction<None, State>
     {

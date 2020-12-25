@@ -6,7 +6,7 @@ using FunBot.Json;
 using FunBot.Storage;
 using Newtonsoft.Json.Linq;
 
-namespace FunBot.Conversation
+namespace FunBot.Communication
 {
     public sealed class SqLiteStates : State.Collection
     {

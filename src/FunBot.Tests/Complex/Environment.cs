@@ -5,7 +5,7 @@ using System.Data.SQLite;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FunBot.Conversation;
+using FunBot.Communication;
 using FunBot.Jobs;
 
 namespace FunBot.Tests.Complex
@@ -70,7 +70,7 @@ namespace FunBot.Tests.Complex
                 talk = new Talk(this);
             }
 
-            public override Conversation.Talk For(long chatId, Keyboard keyboard)
+            public override Communication.Talk For(long chatId, Keyboard keyboard)
             {
                 if (chatId != expectedChatId)
                 {
@@ -87,7 +87,7 @@ namespace FunBot.Tests.Complex
                 return result;
             }
 
-            private sealed class Talk : Conversation.Talk
+            private sealed class Talk : Communication.Talk
             {
                 private readonly Talks talks;
 

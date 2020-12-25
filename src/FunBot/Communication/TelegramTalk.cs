@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Telegram.Bot;
 
-namespace FunBot.Conversation
+namespace FunBot.Communication
 {
     public sealed class TelegramTalk : Talk
     {

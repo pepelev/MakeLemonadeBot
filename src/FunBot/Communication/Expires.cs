@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FunBot.Conversation
+namespace FunBot.Communication
 {
     public static class Expires
     {

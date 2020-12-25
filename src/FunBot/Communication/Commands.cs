@@ -2,7 +2,7 @@
 using System.Collections.Immutable;
 using System.Threading.Tasks;
 
-namespace FunBot.Conversation
+namespace FunBot.Communication
 {
     public sealed class Commands : Interaction<string, State>
     {

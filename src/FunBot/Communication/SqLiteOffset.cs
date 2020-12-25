@@ -2,7 +2,7 @@
 using System.Linq;
 using FunBot.Storage;
 
-namespace FunBot.Conversation
+namespace FunBot.Communication
 {
     public sealed class SqLiteOffset : Offset
     {

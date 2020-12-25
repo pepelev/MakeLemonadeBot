@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using FunBot.Conversation;
+using FunBot.Communication;
 using FunBot.Jobs;
 
 namespace FunBot

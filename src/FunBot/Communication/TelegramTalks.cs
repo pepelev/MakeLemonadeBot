@@ -1,6 +1,6 @@
 ﻿using Telegram.Bot;
 
-namespace FunBot.Conversation
+namespace FunBot.Communication
 {
     public sealed class TelegramTalks : Talk.Collection
     {

@@ -1,4 +1,4 @@
-﻿namespace FunBot.Conversation
+﻿namespace FunBot.Communication
 {
     public struct None
     {

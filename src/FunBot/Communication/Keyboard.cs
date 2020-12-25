@@ -1,6 +1,6 @@
 ﻿using Telegram.Bot.Types.ReplyMarkups;
 
-namespace FunBot.Conversation
+namespace FunBot.Communication
 {
     public abstract class Keyboard
     {

@@ -1,4 +1,4 @@
-﻿using FunBot.Conversation;
+﻿using FunBot.Communication;
 
 namespace FunBot
 {

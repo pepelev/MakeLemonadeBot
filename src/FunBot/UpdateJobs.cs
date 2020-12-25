@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Threading;
 using FunBot.Configuration;
-using FunBot.Conversation;
 using FunBot.Jobs;
 using FunBot.Sheets;
 using FunBot.Updates;

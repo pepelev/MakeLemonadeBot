@@ -4,28 +4,21 @@ using System.Data.SQLite;
 using System.Linq;
 using FunBot.Storage;
 
-namespace FunBot.Conversation
+namespace FunBot.Communication
 {
-    public sealed class Serials : Content.Collection
+    public sealed class Books : Content.Collection
     {
-        private readonly long chatId;
-        private readonly Clock clock;
         private readonly SQLiteConnection connection;
-        private readonly SerialDuration duration;
+        private readonly long chatId;
         private readonly Random random;
+        private readonly Clock clock;
 
-        public Serials(
-            long chatId,
-            SerialDuration duration,
-            SQLiteConnection connection,
-            Random random,
-            Clock clock)
+        public Books(long chatId, SQLiteConnection connection, Random random, Clock clock)
         {
-            this.chatId = chatId;
             this.connection = connection;
+            this.chatId = chatId;
             this.random = random;
             this.clock = clock;
-            this.duration = duration;
         }
 
         public override bool Empty
@@ -38,43 +31,42 @@ namespace FunBot.Conversation
         }
 
         private IReadOnlyList<string> NotShownIds(SQLiteTransaction transaction) => transaction.Read(@"
-            SELECT id FROM serials
+            SELECT id FROM books
             WHERE id NOT IN (
-                SELECT serial_id FROM shown_serials
+                SELECT book_id FROM shown_books
                 WHERE chat_id = :chat_id
-            ) AND duration = :duration",
+            )",
             row => row.String("id"),
-            ("chat_id", chatId),
-            ("duration", duration.ToString("G"))
+            ("chat_id", chatId)
         );
 
         public override Content Pick()
         {
             using var transaction = connection.BeginTransaction();
             var id = PickId(transaction);
-            var movie = transaction.Read(@"
-                SELECT id, name, original_name, year, duration
-                FROM serials
+            var book = connection.Read(@"
+                SELECT id, name, author
+                FROM books
                 WHERE id = :id",
-                row => new Serial(
+                row => new Book(
                     row.String("id"),
                     row.String("name"),
-                    row.String("original_name"),
-                    row.Int("year"),
-                    Enum.Parse<SerialDuration>(row.String("duration"))
+                    row.String("author")
                 ),
                 ("id", id)
             ).Single();
             transaction.Commit();
-            return new Item(chatId, movie, connection);
+            return new Item(chatId, book, connection);
         }
+
+
 
         private string PickId(SQLiteTransaction transaction)
         {
             var toBeShownId = transaction.Read(@"
-                SELECT serial_id FROM shown_serials
+                SELECT book_id FROM shown_books
                 WHERE state = 'to-be-shown'",
-                row => row.String("serial_id")
+                row => row.String("book_id")
             ).SingleOrDefault();
 
             if (toBeShownId != null)
@@ -84,10 +76,10 @@ namespace FunBot.Conversation
 
             var id = random.Pick(NotShownIds(transaction));
             transaction.Execute(@"
-                INSERT INTO shown_serials (chat_id, serial_id, state, at)
-                VALUES (:chat_id, :serial_id, 'to-be-shown', :at)",
+                INSERT INTO shown_books (chat_id, book_id, state, at)
+                VALUES (:chat_id, :book_id, 'to-be-shown', :at)",
                 ("chat_id", chatId),
-                ("serial_id", id),
+                ("book_id", id),
                 ("at", clock.Now)
             );
             return id;
@@ -95,27 +87,27 @@ namespace FunBot.Conversation
 
         private sealed class Item : Content
         {
+            private readonly Book book;
             private readonly long chatId;
             private readonly SQLiteConnection connection;
-            private readonly Serial serial;
 
-            public Item(long chatId, Serial serial, SQLiteConnection connection)
+            public Item(long chatId, Book book, SQLiteConnection connection)
             {
-                this.serial = serial;
+                this.book = book;
                 this.connection = connection;
                 this.chatId = chatId;
             }
 
-            public override string Print() => serial.Print();
+            public override string Print() => book.Print();
 
             public override void MarkShown()
             {
                 connection.Execute(@"
-                    UPDATE shown_serials
+                    UPDATE shown_books
                     SET state = 'shown'
-                    WHERE (chat_id, serial_id) = (:chat_id, :serial_id)",
+                    WHERE (chat_id, book_id) = (:chat_id, :book_id)",
                     ("chat_id", chatId),
-                    ("serial_id", serial.Id)
+                    ("book_id", book.Id)
                 );
             }
         }

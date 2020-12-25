@@ -2,7 +2,7 @@
 using System.Linq;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace FunBot.Conversation
+namespace FunBot.Communication
 {
     public sealed class TwoColumnKeyboard : Keyboard
     {

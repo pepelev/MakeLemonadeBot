@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace FunBot.Conversation
+namespace FunBot.Communication
 {
     public sealed class FeedbackDialogue : Interaction<None, State>
     {

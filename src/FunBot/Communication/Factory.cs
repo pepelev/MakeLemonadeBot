@@ -2,7 +2,7 @@
 using System.Collections.Immutable;
 using System.Data.SQLite;
 
-namespace FunBot.Conversation
+namespace FunBot.Communication
 {
     public sealed class Factory : State.Factory
     {

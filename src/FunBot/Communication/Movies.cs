@@ -4,7 +4,7 @@ using System.Data.SQLite;
 using System.Linq;
 using FunBot.Storage;
 
-namespace FunBot.Conversation
+namespace FunBot.Communication
 {
     public sealed class Movies : Content.Collection
     {
