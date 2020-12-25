@@ -4,7 +4,7 @@ namespace FunBot.Communication
 {
     public sealed class Limited<In> : Interaction<In, Conversation>
     {
-        private readonly Conversation.Factory factory;
+        private readonly Conversation empty;
         private readonly int queriesLeft;
         private readonly Talk talk;
         private readonly Interaction<In, Conversation> interaction;
@@ -12,12 +12,12 @@ namespace FunBot.Communication
         public Limited(
             int queriesLeft,
             Talk talk,
-            Conversation.Factory factory,
+            Conversation empty,
             Interaction<In, Conversation> interaction)
         {
             this.queriesLeft = queriesLeft;
             this.talk = talk;
-            this.factory = factory;
+            this.empty = empty;
             this.interaction = interaction;
         }
 
@@ -26,7 +26,7 @@ namespace FunBot.Communication
             if (queriesLeft == 0)
             {
                 await talk.SayAsync("На сегодня это все, приходи завтра");
-                return factory.Selection(0);
+                return empty;
             }
 
             return await interaction.RunAsync(query);

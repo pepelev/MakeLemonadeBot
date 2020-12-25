@@ -30,21 +30,8 @@ namespace FunBot.Communication
                 ("chat_id", chatId)
             ).SingleOrDefault();
 
-            if (content == null)
-            {
-                return Factory(chatId).Greeting();
-            }
-
-            return State(chatId, content);
+            return State(chatId, content ?? "{\"type\": \"greeting\"}");
         }
-
-        private Factory Factory(long chatId) => new Factory(
-            chatId,
-            talks,
-            connection,
-            random,
-            clock
-        );
 
         public override void Update(long chatId, Conversation conversation)
         {
@@ -77,7 +64,6 @@ namespace FunBot.Communication
 
         private Conversation State(long chatId, string content)
         {
-            var factory = Factory(chatId);
             var @object = content.AsJsonObject();
             return new StoredConversation(
                 chatId,
@@ -85,7 +71,6 @@ namespace FunBot.Communication
                 clock,
                 connection,
                 random,
-                factory,
                 @object
             );
         }

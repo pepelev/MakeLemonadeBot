@@ -7,18 +7,24 @@ namespace FunBot.Communication
     public sealed class Commands : Interaction<string, Conversation>
     {
         private readonly ImmutableStack<(string Command, Content.Collection Collection)> commands;
-        private readonly Conversation.Factory factory;
+        private readonly Conversation back;
+        private readonly Conversation empty;
+        private readonly Conversation selected;
         private readonly Talk talk;
         private readonly int queriesLeft;
 
         public Commands(
             ImmutableStack<(string Command, Content.Collection Collection)> commands,
-            Conversation.Factory factory,
+            Conversation back,
+            Conversation selected,
+            Conversation empty,
             Talk talk,
             int queriesLeft)
         {
             this.commands = commands;
-            this.factory = factory;
+            this.back = back;
+            this.selected = selected;
+            this.empty = empty;
             this.talk = talk;
             this.queriesLeft = queriesLeft;
         }
@@ -34,7 +40,7 @@ namespace FunBot.Communication
             if (commands.IsEmpty)
             {
                 return new WithoutArgument<string, Conversation>(
-                    new Misunderstanding(talk, factory.Selection(queriesLeft))
+                    new Misunderstanding(talk, back)
                 );
             }
 
@@ -45,19 +51,21 @@ namespace FunBot.Communication
                 new Limited<string>(
                     queriesLeft,
                     talk,
-                    factory,
+                    empty,
                     new WithoutArgument<string, Conversation>(
                         new Show(
                             collection,
                             talk,
-                            factory.Selection(queriesLeft),
-                            factory.Selection(queriesLeft - 1)
+                            back,
+                            selected
                         )
                     )
                 ),
                 new Commands(
                     commands.Pop(),
-                    factory,
+                    back,
+                    selected,
+                    empty,
                     talk,
                     queriesLeft
                 )

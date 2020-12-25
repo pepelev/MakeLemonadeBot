@@ -9,11 +9,6 @@ namespace FunBot.Communication
         private readonly Conversation next;
         private readonly Talk talk;
 
-        public Greeting(Talk talk, Factory factory)
-            : this(talk, new LazyConversation(() => factory.Selection(5)))
-        {
-        }
-
         public Greeting(Talk talk, Conversation next)
         {
             this.talk = talk;

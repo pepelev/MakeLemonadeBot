@@ -13,14 +13,6 @@ namespace FunBot.Communication
         public abstract Task<Conversation> AskAsync();
         public abstract JObject Serialize();
 
-        public abstract class Factory
-        {
-            public abstract Conversation Greeting();
-            public abstract Conversation Selection(int queriesLeft);
-            public abstract Conversation SerialSelection(int queriesLeft);
-            public abstract Conversation Feedback(Conversation from);
-        }
-
         public abstract class Collection
         {
             public abstract Conversation Get(long chatId);

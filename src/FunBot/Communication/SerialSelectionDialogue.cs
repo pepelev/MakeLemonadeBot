@@ -4,21 +4,19 @@ namespace FunBot.Communication
 {
     public sealed class SerialSelectionDialogue : Interaction<None, Conversation>
     {
-        private readonly Conversation.Factory factory;
         private readonly Talk talk;
-        private readonly int queriesLeft;
+        private readonly Conversation choice;
 
-        public SerialSelectionDialogue(Conversation.Factory factory, Talk talk, int queriesLeft)
+        public SerialSelectionDialogue(Talk talk, Conversation choice)
         {
-            this.factory = factory;
             this.talk = talk;
-            this.queriesLeft = queriesLeft;
+            this.choice = choice;
         }
 
         public override async Task<Conversation> RunAsync(None query)
         {
             await talk.SayAsync("Какой, длинный или короткий?");
-            return factory.SerialSelection(queriesLeft);
+            return choice;
         }
     }
 }
