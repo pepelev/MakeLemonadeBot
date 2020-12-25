@@ -2,6 +2,9 @@
 using System.Data.SQLite;
 using System.Threading;
 using System.Threading.Tasks;
+using FunBot.Collections;
+using FunBot.Jobs;
+using FunBot.Sheets;
 using FunBot.Storage;
 using Serilog;
 

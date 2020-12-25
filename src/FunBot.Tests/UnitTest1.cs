@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System;
 using System.Linq;
+using FunBot.Collections;
 
 namespace FunBot.Tests
 {

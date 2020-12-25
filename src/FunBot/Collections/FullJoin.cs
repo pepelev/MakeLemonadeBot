@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FunBot
+namespace FunBot.Collections
 {
     public sealed class FullJoin<Key, Left, Right> : IEnumerable<(Key Key, Left Left, Right Right)>
     {

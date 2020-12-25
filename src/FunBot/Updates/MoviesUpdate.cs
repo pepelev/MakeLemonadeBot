@@ -3,6 +3,9 @@ using System.Data.SQLite;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FunBot.Collections;
+using FunBot.Jobs;
+using FunBot.Sheets;
 using FunBot.Storage;
 using Serilog;
 

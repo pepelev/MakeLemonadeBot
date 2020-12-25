@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using FunBot.Collections;
 using FunBot.Configuration;
-using FunBot.Conversation;
 using Google.Apis.Sheets.v4;
 
-namespace FunBot
+namespace FunBot.Sheets
 {
     public sealed class GoogleSheet : Sheet
     {

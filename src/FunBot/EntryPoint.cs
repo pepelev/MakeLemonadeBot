@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FunBot.Configuration;
 using FunBot.Conversation;
+using FunBot.Jobs;
 using FunBot.Storage;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
@@ -14,6 +15,7 @@ using Google.Apis.Util.Store;
 using Newtonsoft.Json.Linq;
 using Serilog;
 using Telegram.Bot;
+using Parallel = FunBot.Jobs.Parallel;
 
 namespace FunBot
 {

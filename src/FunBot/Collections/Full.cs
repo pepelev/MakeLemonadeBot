@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FunBot
+namespace FunBot.Collections
 {
     public static class Full
     {

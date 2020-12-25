@@ -3,6 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Extensions;
+using FunBot.Jobs;
+using FunBot.Sheets;
 using FunBot.Storage;
 using FunBot.Updates;
 using NUnit.Framework;

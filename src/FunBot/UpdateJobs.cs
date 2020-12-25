@@ -4,6 +4,8 @@ using System.Data.SQLite;
 using System.Threading;
 using FunBot.Configuration;
 using FunBot.Conversation;
+using FunBot.Jobs;
+using FunBot.Sheets;
 using FunBot.Updates;
 using Google.Apis.Sheets.v4;
 using Serilog;

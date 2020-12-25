@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FunBot
+namespace FunBot.Sheets
 {
     public sealed class Row
     {

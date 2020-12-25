@@ -1,4 +1,4 @@
-﻿namespace FunBot
+﻿namespace FunBot.Sheets
 {
     public readonly struct Location
     {

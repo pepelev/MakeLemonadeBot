@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace FunBot
+namespace FunBot.Jobs
 {
     public sealed class Scheduled : Job
     {

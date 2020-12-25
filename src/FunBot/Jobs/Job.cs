@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace FunBot
+namespace FunBot.Jobs
 {
     public abstract class Job
     {
