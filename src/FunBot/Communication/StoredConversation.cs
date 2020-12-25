@@ -20,17 +20,14 @@ namespace FunBot.Communication
 
         public override DateTime AskAt => conversation.AskAt;
 
-        private Conversation Parse()
-        {
-            return Parse(@object);
-        }
+        private Conversation Parse() => Parse(@object);
 
         private Conversation Parse(JObject json)
         {
             var type = json.Get<string>("type");
             return type switch
             {
-                "welcome" => factory.Greeting(),
+                "greeting" => factory.Greeting(),
                 "selection" => Selection(json),
                 "serialSelection" => SerialSelection(json),
                 "feedback" => factory.Feedback(
