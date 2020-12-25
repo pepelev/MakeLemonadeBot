@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.SQLite;
 using System.Threading.Tasks;
 using FunBot.Json;
 using Newtonsoft.Json.Linq;
@@ -7,12 +8,29 @@ namespace FunBot.Communication
 {
     public sealed class StoredConversation : Conversation
     {
+        private readonly long chatId;
+        private readonly Clock clock;
+        private readonly SQLiteConnection connection;
         private readonly Conversation conversation;
         private readonly Factory factory;
         private readonly JObject @object;
+        private readonly Random random;
+        private readonly Talk.Collection talks;
 
-        public StoredConversation(Factory factory, JObject @object)
+        public StoredConversation(
+            long chatId,
+            Talk.Collection talks,
+            Clock clock,
+            SQLiteConnection connection,
+            Random random,
+            Factory factory,
+            JObject @object)
         {
+            this.chatId = chatId;
+            this.talks = talks;
+            this.clock = clock;
+            this.connection = connection;
+            this.random = random;
             this.factory = factory;
             this.@object = @object;
             conversation = new LazyConversation(Parse);
@@ -22,12 +40,24 @@ namespace FunBot.Communication
 
         private Conversation Parse() => Parse(@object);
 
+        private Keyboard FullKeyboard => new TwoColumnKeyboard(
+            "Кино",
+            "Сериалы",
+            //"Мультфильмы",
+            "Книги",
+            //"Кладовая",
+            "Написать нам"
+        );
+
         private Conversation Parse(JObject json)
         {
             var type = json.Get<string>("type");
             return type switch
             {
-                "greeting" => factory.Greeting(),
+                "greeting" => new Greeting(
+                    talks.For(chatId, FullKeyboard),
+                    new LazyConversation(() => factory.Selection(5))
+                ),
                 "selection" => Selection(json),
                 "serialSelection" => SerialSelection(json),
                 "feedback" => factory.Feedback(

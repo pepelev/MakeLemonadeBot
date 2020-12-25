@@ -6,13 +6,18 @@ namespace FunBot.Communication
 {
     public sealed class Greeting : Conversation
     {
-        private readonly Factory factory;
+        private readonly Conversation next;
         private readonly Talk talk;
 
         public Greeting(Talk talk, Factory factory)
+            : this(talk, new LazyConversation(() => factory.Selection(5)))
+        {
+        }
+
+        public Greeting(Talk talk, Conversation next)
         {
             this.talk = talk;
-            this.factory = factory;
+            this.next = next;
         }
 
         public override DateTime AskAt => Expires.Never;
@@ -20,7 +25,7 @@ namespace FunBot.Communication
         public override async Task<Conversation> AnswerAsync(string query)
         {
             await talk.SayAsync("Привет, это отличный бот");
-            return factory.Selection(5);
+            return next;
         }
 
         public override Task<Conversation> AskAsync() => Task.FromResult<Conversation>(this);

@@ -79,7 +79,15 @@ namespace FunBot.Communication
         {
             var factory = Factory(chatId);
             var @object = content.AsJsonObject();
-            return new StoredConversation(factory, @object);
+            return new StoredConversation(
+                chatId,
+                talks,
+                clock,
+                connection,
+                random,
+                factory,
+                @object
+            );
         }
     }
 }
