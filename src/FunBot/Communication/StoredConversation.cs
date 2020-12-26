@@ -76,7 +76,7 @@ namespace FunBot.Communication
         private Keyboard FullKeyboard => new TwoColumnKeyboard(
             "Кино",
             "Сериалы",
-            //"Мультфильмы",
+            "Мультфильмы",
             "Книги",
             //"Кладовая",
             "Написать нам"
@@ -138,7 +138,8 @@ namespace FunBot.Communication
                             new (string Command, Content.Collection Collection)[]
                             {
                                 ("кино", new Movies(chatId, connection, random, clock)),
-                                ("книги", new Books(chatId, connection, random, clock))
+                                ("книги", new Books(chatId, connection, random, clock)),
+                                ("мультфильмы", new Cartoons(chatId, connection, random, clock))
                             }
                         ),
                         this,
