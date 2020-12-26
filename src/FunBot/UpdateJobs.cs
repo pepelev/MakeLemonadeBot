@@ -45,14 +45,7 @@ namespace FunBot
                 token
             );
             yield return Wrap(nameof(SerialsUpdate), update1);
-
-            var update2 = new BooksUpdate(
-                connection,
-                log,
-                sheets.Books,
-                token
-            );
-            yield return Wrap(nameof(BooksUpdate), update2);
+            yield return Wrap(nameof(BooksUpdate), Books());
         }
 
         private Job Movies()
@@ -73,6 +66,31 @@ namespace FunBot
                                 log,
                                 connection,
                                 token
+                            )
+                        )
+                    )
+                )
+            );
+        }
+
+        private Job Books()
+        {
+            return new SheetDownloading(
+                log,
+                sheets.Books,
+                token,
+                new CancelWatching<IReadOnlyList<Row>>(
+                    log,
+                    token,
+                    new BooksParsing(
+                        log,
+                        new DuplicateCheck<Book>(
+                            log,
+                            movie => movie.Id,
+                            new BooksUpdate(
+                                log,
+                                token,
+                                connection
                             )
                         )
                     )

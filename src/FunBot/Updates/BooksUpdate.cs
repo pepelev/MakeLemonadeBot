@@ -4,112 +4,45 @@ using System.Threading;
 using System.Threading.Tasks;
 using FunBot.Collections;
 using FunBot.Jobs;
-using FunBot.Sheets;
 using FunBot.Storage;
 using Serilog;
 
 namespace FunBot.Updates
 {
-    public sealed class BooksUpdate : Job
+    public sealed class BooksUpdate : Job<IReadOnlyList<Book>>
     {
-        private readonly SQLiteConnection connection;
         private readonly ILogger log;
-        private readonly Sheet sheet;
         private readonly CancellationToken token;
+        private readonly SQLiteConnection connection;
 
-        public BooksUpdate(
-            SQLiteConnection connection,
-            ILogger log,
-            Sheet sheet,
-            CancellationToken token)
+        public BooksUpdate(ILogger log, CancellationToken token, SQLiteConnection connection)
         {
-            this.connection = connection;
             this.log = log;
             this.token = token;
-            this.sheet = sheet;
+            this.connection = connection;
         }
 
-        public override async Task RunAsync()
+        public override Task RunAsync(IReadOnlyList<Book> downloaded)
         {
-            var rows = await sheet.RowsAsync(token);
-            if (rows.Count == 0)
-            {
-                log.Warning("Sheet is empty");
-                return;
-            }
-
-            var header = rows[0];
-            var id = header.Find("Идентификатор");
-            var name = header.Find("Название");
-            var author = header.Find("Автор");
-
-            var allFound = id.Found && name.Found && author.Found;
-            if (!allFound)
-            {
-                log.Warning("Could not find header");
-                return;
-            }
-
-            var downloaded = Parse(rows, id, name, author);
             var stored = Stored();
-            var join = Full.Join(stored, downloaded, book => book.Id);
+            var comparison = Full.Join(stored, downloaded, book => book.Id);
             using var transaction = connection.BeginTransaction();
-            foreach (var (key, left, right) in join)
+            try
             {
-                token.ThrowIfCancellationRequested();
-                if (right == null)
+                if (Update(comparison, transaction))
                 {
-                    transaction.Execute(
-                        @"DELETE FROM TABLE books WHERE id = :id",
-                        ("id", key)
-                    );
-                    log.Information("Remove {Key}", key);
-                    continue;
-                }
-
-                if (left != right)
-                {
-                    transaction.Execute(@"
-                    REPLACE INTO books (id, name, author)
-                    VALUES (:id, :name, :author)",
-                        ("id", right.Id),
-                        ("name", right.Name),
-                        ("author", right.Author)
-                    );
-
-                    log.Information("Add or update {Key}", key);
+                    transaction.Commit();
+                    return Task.CompletedTask;
                 }
             }
-
-            transaction.Commit();
-        }
-
-        private List<Book> Parse(
-            IReadOnlyList<Row> rows,
-            Location id,
-            Location name,
-            Location author)
-        {
-            var downloaded = new List<Book>();
-            for (var i = 1; i < rows.Count; i++)
+            catch
             {
-                var row = rows[i];
-                if (row.Has(id) && row.Has(name) && row.Has(author))
-                {
-                    var book = new Book(
-                        row.Get(id),
-                        row.Get(name),
-                        row.Get(author)
-                    );
-                    downloaded.Add(book);
-                }
-                else
-                {
-                    log.Warning("Row {Index} has no id, name or author", i);
-                }
+                transaction.Rollback();
+                throw;
             }
 
-            return downloaded;
+            transaction.Rollback();
+            return Task.CompletedTask;
         }
 
         private IReadOnlyList<Book> Stored() => connection.Read(@"
@@ -122,5 +55,44 @@ namespace FunBot.Updates
                 row.String("author")
             )
         );
+
+        private bool Update(
+            IEnumerable<(string Key, Book Old, Book New)> comparison,
+            SQLiteTransaction transaction)
+        {
+            foreach (var (key, old, @new) in comparison)
+            {
+                if (token.IsCancellationRequested)
+                {
+                    log.Information("Cancellation requested");
+                    return false;
+                }
+
+                if (@new == null)
+                {
+                    transaction.Execute(
+                        @"DELETE FROM TABLE books WHERE id = :id",
+                        ("id", key)
+                    );
+                    log.Information("Remove {Book}", old);
+                    continue;
+                }
+
+                if (old != @new)
+                {
+                    transaction.Execute(@"
+                    REPLACE INTO books (id, name, author)
+                    VALUES (:id, :name, :author)",
+                        ("id", @new.Id),
+                        ("name", @new.Name),
+                        ("author", @new.Author)
+                    );
+
+                    log.Information("Replace {OldBook} with {NewBook}", old, @new);
+                }
+            }
+
+            return true;
+        }
     }
 }
