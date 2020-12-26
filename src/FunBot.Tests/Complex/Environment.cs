@@ -166,9 +166,14 @@ namespace FunBot.Tests.Complex
             }
         }
 
-        public async Task<IEnumerable<string>> WaitAsync(DateTime until)
+        public async Task<IEnumerable<string>> WaitAsync(DateTime until, params string[] queries)
         {
             clock.Pass(until);
+            foreach (var query in queries)
+            {
+                source.Feed(query);
+            }
+
             await sut.RunAsync().ConfigureAwait(false);
             return talks.Extract();
         }

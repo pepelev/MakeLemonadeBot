@@ -23,15 +23,15 @@ namespace FunBot
 
         public override async Task RunAsync()
         {
-            foreach (var update in await updateSource.UpdatesAsync(cancellationToken))
-            {
-                await update.Subject.AnswerAsync(update.Text);
-            }
-
             foreach (var (chatId, state) in states.Questions())
             {
                 var expiredState = await state.AskAsync();
                 states.Update(chatId, expiredState);
+            }
+
+            foreach (var update in await updateSource.UpdatesAsync(cancellationToken))
+            {
+                await update.Subject.AnswerAsync(update.Text);
             }
         }
     }

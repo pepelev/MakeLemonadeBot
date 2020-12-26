@@ -129,9 +129,20 @@ namespace FunBot.Tests.Complex
         {
             await context.FeedAsync("/hello");
             await context.FeedAsync(5, "Кино");
-            await context.WaitAsync(26.November(2020).AsUtc());
+            await context.WaitAsync(26.November(2020).At(01, 30).AsUtc());
 
             var replies = await context.FeedAsync("Кино");
+
+            replies.Single().Should().NotBe("На сегодня это все, приходи завтра");
+        }
+
+        [Test]
+        public async Task Refresh_Limit_On_New_Day_Even_If_Query_Comes_At_Day_Bound()
+        {
+            await context.FeedAsync("/hello");
+            await context.FeedAsync(5, "Кино");
+
+            var replies = await context.WaitAsync(26.November(2020).At(01, 30).AsUtc(), "кино");
 
             replies.Single().Should().NotBe("На сегодня это все, приходи завтра");
         }
