@@ -57,14 +57,18 @@ namespace FunBot.Communication
             {
                 "greeting" => new Greeting(
                     talks.For(chatId, FullKeyboard),
-                    new LazyConversation(FullSelection)
+                    new LazyConversation(() => new ActiveFeedback.Bootstrap(FullSelection()))
                 ),
                 "fullSelection" => FullSelection(),
                 "selection" => Selection(),
-                "serialSelection" => SerialSelection(),
+                "serialSelection" => SerialSelection(
+                    Navigate("back"),
+                    Navigate("next")
+                ),
                 "feedback" => Feedback(
                     Navigate("from")
                 ),
+                "activeFeedbackBootstrap" => Navigate("conversation"),
                 _ => throw new Exception($"Could not parse {@object}")
             };
         }
@@ -164,11 +168,6 @@ namespace FunBot.Communication
             var timestamp = @object.Get<DateTime>("timestamp");
             return Selection(left, timestamp);
         }
-
-        private Conversation SerialSelection() => SerialSelection(
-            Navigate("back"),
-            Navigate("next")
-        );
 
         public override async Task<Conversation> AnswerAsync(string query) =>
             await conversation.AnswerAsync(query);

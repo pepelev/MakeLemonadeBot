@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 
 namespace FunBot.Communication
 {
-    public sealed class ActiveFeedback : Conversation
+    public sealed partial class ActiveFeedback : Conversation
     {
         private readonly Conversation conversation;
         private readonly DateTime firstQueryTimestamp;

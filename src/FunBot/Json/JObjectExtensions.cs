@@ -21,7 +21,7 @@ namespace FunBot.Json
             if (@object.ContainsKey(propertyName))
                 return @object.Value<T>(propertyName);
 
-            throw new KeyNotFoundException($"Property {propertyName} not found");
+            throw new KeyNotFoundException($"Property {propertyName} not found in object {@object}");
         }
     }
 }
