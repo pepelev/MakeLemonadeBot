@@ -114,7 +114,9 @@ namespace FunBot.Communication
                 new WithoutArgument<string, Conversation>(
                     new FeedbackDialogue(
                         talks.For(chatId, FeedbackKeyboard),
-                        Feedback(new LazyConversation(() => Selection(queriesLeft, timestamp)))
+                        new LazyConversation(
+                            () => Feedback(Selection(queriesLeft, timestamp))
+                        )
                     )
                 ),
                 new Matching<string, Conversation>(
