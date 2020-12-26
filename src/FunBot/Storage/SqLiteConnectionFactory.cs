@@ -108,7 +108,7 @@ namespace FunBot.Storage
             ),
             (
                 Schema.Zero,
-                @"CREATE TABLE states (
+                @"CREATE TABLE conversations (
                     chat_id INT PRIMARY KEY,
                     content TEXT NOT NULL,
                     expires_at TEXT NOT NULL

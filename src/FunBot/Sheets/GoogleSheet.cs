@@ -10,7 +10,7 @@ namespace FunBot.Sheets
     public sealed class GoogleSheet : Sheet
     {
         private readonly SheetsService service;
-        private readonly Source source; 
+        private readonly Source source;
 
         public GoogleSheet(SheetsService service, Source source)
         {
@@ -27,6 +27,33 @@ namespace FunBot.Sheets
                 values,
                 cells => new Row(cells)
             );
+        }
+
+        public new sealed class Collection : Sheet.Collection
+        {
+            private const string MoviesSection = "movies";
+            private const string SerialsSection = "serials";
+            private const string BooksSection = "books";
+            private readonly SheetsService service;
+            private readonly Source.Collection sources;
+
+            public Collection(SheetsService service, Source.Collection sources)
+            {
+                this.service = service;
+                this.sources = sources;
+            }
+
+            public override Sheet Movies => Sheet(MoviesSection);
+            public override Sheet Serials => Sheet(SerialsSection);
+            public override Sheet Books => Sheet(BooksSection);
+
+            private Sheet Sheet(string section)
+            {
+                if (sources.Contains(section))
+                    return new GoogleSheet(service, sources.Get(section));
+
+                return new ConstSheet();
+            }
         }
     }
 }

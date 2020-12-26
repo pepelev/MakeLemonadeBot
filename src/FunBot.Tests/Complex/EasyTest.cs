@@ -3,10 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Extensions;
-using FunBot.Jobs;
 using FunBot.Sheets;
 using FunBot.Storage;
-using FunBot.Updates;
 using NUnit.Framework;
 using Serilog.Core;
 
@@ -21,21 +19,15 @@ namespace FunBot.Tests.Complex
         {
             var factory = new SqLiteConnectionFactory("Data Source=:memory:;Version=3;New=True;");
             var connection = factory.Create();
-            var updates = new Job[]
-            {
-                new BooksUpdate(
-                    connection,
-                    Logger.None,
-                    new ConstSheet(
-                        new Row("Идентификатор", "Название", "Автор"),
-                        new Row("12", "Стоя под радугой", "Фэнни Флэгг"),
-                        new Row("13", "Дживс и Вустер", "П. Г. Вудхауз")
-                    ),
-                    CancellationToken.None
-                ),
-                new MoviesUpdate(
-                    connection,
-                    Logger.None,
+            using var @lock = new SemaphoreSlim(1, 1);
+            var clock = new TestClock(25.November(2020).AsUtc());
+            var jobs = new UpdateJobs(
+                CancellationToken.None,
+                @lock,
+                Logger.None,
+                clock,
+                connection,
+                new ConstSheets(
                     new ConstSheet(
                         new Row("Идентификатор", "Название", "Оригинальное название", "Год"),
                         new Row("1", "Красотка", "Pretty Woman, 1990"),
@@ -45,26 +37,25 @@ namespace FunBot.Tests.Complex
                         new Row("5", "Огни большого города", "City Lights", "1931"),
                         new Row("6", "Семь психопатов", "Seven Psychopaths", "2012")
                     ),
-                    CancellationToken.None
-                ),
-                new SerialsUpdate(
-                    connection,
-                    Logger.None,
                     new ConstSheet(
                         new Row("Идентификатор", "Название", "Оригинальное название", "Год", "Продолжительность"),
                         new Row("1", "Тед Лассо", "Ted Lasso", "2020", "короткий"),
                         new Row("7", "Шиттс Крик", "Schitt's Creek", "2015", "длинный")
                     ),
-                    CancellationToken.None
-                ),
-            };
+                    new ConstSheet(
+                        new Row("Идентификатор", "Название", "Автор"),
+                        new Row("12", "Стоя под радугой", "Фэнни Флэгг"),
+                        new Row("13", "Дживс и Вустер", "П. Г. Вудхауз")
+                    )
+                )
+            );
 
-            foreach (var update in updates)
+            foreach (var update in jobs)
             {
                 await update.RunAsync();
             }
 
-            context = new Environment(25.November(2020).AsUtc(), connection);
+            context = new Environment(clock, connection);
         }
 
         [Test]

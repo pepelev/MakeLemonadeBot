@@ -23,13 +23,13 @@ namespace FunBot.Tests.Complex
         private readonly TestClock clock;
 
         public Environment(
-            DateTime start,
+            TestClock clock,
             SQLiteConnection connection)
         {
             const int chatId = 42;
             this.connection = connection;
             talks = new Talks(chatId);
-            clock = new TestClock(start);
+            this.clock = clock;
             states = new SqLiteStates(
                 connection,
                 talks,

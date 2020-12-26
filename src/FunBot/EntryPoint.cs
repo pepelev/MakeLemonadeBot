@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using FunBot.Communication;
 using FunBot.Configuration;
 using FunBot.Jobs;
+using FunBot.Sheets;
 using FunBot.Storage;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
@@ -114,8 +115,10 @@ namespace FunBot
                                     log,
                                     clock,
                                     connection,
-                                    sheets,
-                                    settings.Sources
+                                    new GoogleSheet.Collection(
+                                        sheets,
+                                        settings.Sources
+                                    )
                                 ).ToArray()
                             )
                         )

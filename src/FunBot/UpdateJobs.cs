@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Threading;
-using FunBot.Configuration;
 using FunBot.Jobs;
 using FunBot.Sheets;
 using FunBot.Updates;
-using Google.Apis.Sheets.v4;
 using Serilog;
 
 namespace FunBot
@@ -17,8 +15,7 @@ namespace FunBot
         private readonly SQLiteConnection connection;
         private readonly SemaphoreSlim @lock;
         private readonly ILogger log;
-        private readonly SheetsService sheets;
-        private readonly Source.Collection sources;
+        private readonly Sheet.Collection sheets;
         private readonly CancellationToken token;
 
         public UpdateJobs(
@@ -27,8 +24,7 @@ namespace FunBot
             ILogger log,
             Clock clock,
             SQLiteConnection connection,
-            SheetsService sheets,
-            Source.Collection sources)
+            Sheet.Collection sheets)
         {
             this.token = token;
             this.@lock = @lock;
@@ -36,47 +32,53 @@ namespace FunBot
             this.clock = clock;
             this.connection = connection;
             this.sheets = sheets;
-            this.sources = sources;
         }
 
         public IEnumerator<Job> GetEnumerator()
         {
-            if (sources.Contains("movies"))
-            {
-                var update = new MoviesUpdate(
-                    connection,
-                    log,
-                    Sheet("movies"),
-                    token
-                );
-                yield return Wrap(nameof(MoviesUpdate), update);
-            }
-            if (sources.Contains("serials"))
-            {
-                var update = new SerialsUpdate(
-                    connection,
-                    log,
-                    Sheet("serials"),
-                    token
-                );
-                yield return Wrap(nameof(SerialsUpdate), update);
-            }
-            if (sources.Contains("books"))
-            {
-                var update = new BooksUpdate(
-                    connection,
-                    log,
-                    Sheet("books"),
-                    token
-                );
-                yield return Wrap(nameof(BooksUpdate), update);
-            }
+            yield return Wrap(nameof(MoviesUpdate), Movies());
+
+            var update1 = new SerialsUpdate(
+                connection,
+                log,
+                sheets.Serials,
+                token
+            );
+            yield return Wrap(nameof(SerialsUpdate), update1);
+
+            var update2 = new BooksUpdate(
+                connection,
+                log,
+                sheets.Books,
+                token
+            );
+            yield return Wrap(nameof(BooksUpdate), update2);
         }
 
-        private Sheet Sheet(string name) => new GoogleSheet(
-            sheets,
-            sources.Get(name)
-        );
+        private Job Movies()
+        {
+            return new SheetDownloading(
+                log,
+                sheets.Movies,
+                token,
+                new CancelWatching<IReadOnlyList<Row>>(
+                    log,
+                    token,
+                    new MoviesParsing(
+                        log,
+                        new DuplicateCheck<Movie>(
+                            log,
+                            movie => movie.Id,
+                            new MoviesUpdate(
+                                log,
+                                connection,
+                                token
+                            )
+                        )
+                    )
+                )
+            );
+        }
 
         private Job Wrap(string name, Job job) => new Locking(
             token,

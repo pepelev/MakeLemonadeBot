@@ -6,4 +6,9 @@ namespace FunBot.Jobs
     {
         public abstract Task RunAsync();
     }
+
+    public abstract class Job<T>
+    {
+        public abstract Task RunAsync(T argument);
+    }
 }

@@ -55,7 +55,7 @@ namespace FunBot
         {
             using var transaction = connection.BeginTransaction();
             transaction.Execute(@"
-                REPLACE INTO states (chat_id, content, expires_at)
+                REPLACE INTO conversations (chat_id, content, expires_at)
                 VALUES (:chat_id, :content, :expires_at)",
                 ("chat_id", message.ChatId),
                 ("content", conversation.Serialize().AsString()),

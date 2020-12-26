@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using FunBot.Sheets;
 
-namespace FunBot.Tests.Complex
+namespace FunBot.Sheets
 {
     public sealed class ConstSheet : Sheet
     {

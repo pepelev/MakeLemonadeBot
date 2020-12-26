@@ -31,7 +31,7 @@ namespace FunBot.Communication
         public override Conversation Get(long chatId)
         {
             var content = connection.Read(@"
-                SELECT content FROM states
+                SELECT content FROM conversations
                 WHERE chat_id = :chat_id",
                 row => row.String("content"),
                 ("chat_id", chatId)
@@ -43,7 +43,7 @@ namespace FunBot.Communication
         public override void Update(long chatId, Conversation conversation)
         {
             connection.Execute(@"
-                REPLACE INTO states (chat_id, content, expires_at)
+                REPLACE INTO conversations (chat_id, content, expires_at)
                 VALUES (:chat_id, :content, :expires_at)",
                 ("chat_id", chatId),
                 ("content", conversation.Serialize().AsString()),
@@ -54,7 +54,7 @@ namespace FunBot.Communication
         public override IReadOnlyCollection<(long ChatId, Conversation State)> Questions()
         {
             var expired = connection.Read(@"
-                SELECT chat_id, content FROM states
+                SELECT chat_id, content FROM conversations
                 WHERE expires_at <= :now
                 ORDER BY expires_at ASC",
                 row => (ChatId: row.Long("chat_id"), Content: row.String("content")),
