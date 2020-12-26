@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 using FunBot.Jobs;
 using FunBot.Sheets;
@@ -6,12 +7,12 @@ using Serilog;
 
 namespace FunBot.Updates
 {
-    public sealed class MoviesParsing : Job<IReadOnlyList<Row>>
+    public sealed class CartoonsParsing : Job<IReadOnlyList<Row>>
     {
         private readonly ILogger log;
-        private readonly Job<IReadOnlyList<Movie>> next;
+        private readonly Job<IReadOnlyList<Cartoon>> next;
 
-        public MoviesParsing(ILogger log, Job<IReadOnlyList<Movie>> next)
+        public CartoonsParsing(ILogger log, Job<IReadOnlyList<Cartoon>> next)
         {
             this.log = log;
             this.next = next;
@@ -24,30 +25,33 @@ namespace FunBot.Updates
             var name = header.Find("Название");
             var originalName = header.Find("Оригинальное название");
             var year = header.Find("Год");
+            var note = header.Find("Примечание");
 
-            var allFound = id.Found && name.Found && originalName.Found && year.Found;
+            var allFound = id.Found && name.Found && originalName.Found && year.Found && note.Found;
             if (!allFound)
             {
                 log.Warning("Could not find header");
                 return;
             }
 
-            var movies = Parse();
-            await next.RunAsync(movies);
+            var cartoons = Parse();
+            await next.RunAsync(cartoons);
 
-            List<Movie> Parse()
+            List<Cartoon> Parse()
             {
-                var result = new List<Movie>();
+                var result = new List<Cartoon>();
                 for (var i = 1; i < rows.Count; i++)
                 {
                     var row = rows[i];
-                    if (row.Has(id) && row.Has(name))
+                    if (row.Has(id) && row.Has(name) && row.Has(year))
                     {
-                        var movie = new Movie(
+                        var cartoonName = row.Get(name);
+                        var movie = new Cartoon(
                             row.Get(id),
-                            row.Get(name),
-                            row.TryGet(originalName),
-                            row.TryGet(year).AsNumber()
+                            cartoonName,
+                            row.TryGet(originalName) ?? cartoonName,
+                            int.Parse(row.Get(year), CultureInfo.InvariantCulture),
+                            row.TryGet(note)
                         );
                         result.Add(movie);
                     }

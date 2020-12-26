@@ -24,6 +24,7 @@ namespace FunBot
         public int Year { get; }
         public SerialDuration Duration { get; }
         public string Print() => $"{Name} ({OriginalName}), {Year}";
+        public override string ToString() => Print();
 
         public bool Equals(Serial? other)
         {

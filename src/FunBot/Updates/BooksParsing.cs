@@ -51,7 +51,7 @@ namespace FunBot.Updates
                     }
                     else
                     {
-                        log.Warning("Row {Index} has no id, name or author", i);
+                        log.Warning("{$Row} at {Index} has no id, name or year", row, i);
                     }
                 }
 

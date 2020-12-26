@@ -31,9 +31,6 @@ namespace FunBot.Sheets
 
         public new sealed class Collection : Sheet.Collection
         {
-            private const string MoviesSection = "movies";
-            private const string SerialsSection = "serials";
-            private const string BooksSection = "books";
             private readonly SheetsService service;
             private readonly Source.Collection sources;
 
@@ -43,9 +40,10 @@ namespace FunBot.Sheets
                 this.sources = sources;
             }
 
-            public override Sheet Movies => Sheet(MoviesSection);
-            public override Sheet Serials => Sheet(SerialsSection);
-            public override Sheet Books => Sheet(BooksSection);
+            public override Sheet Movies => Sheet("movies");
+            public override Sheet Serials => Sheet("serials");
+            public override Sheet Books => Sheet("books");
+            public override Sheet Cartoons => Sheet("cartoons");
 
             private Sheet Sheet(string section)
             {

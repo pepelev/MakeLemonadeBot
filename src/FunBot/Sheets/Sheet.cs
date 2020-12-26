@@ -13,6 +13,7 @@ namespace FunBot.Sheets
             public abstract Sheet Movies { get; }
             public abstract Sheet Serials { get; }
             public abstract Sheet Books { get; }
+            public abstract Sheet Cartoons { get; }
         }
     }
 }

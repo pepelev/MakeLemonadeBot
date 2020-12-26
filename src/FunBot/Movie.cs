@@ -39,7 +39,7 @@ namespace FunBot
             ({ } originalName, { } year) => $"{Name} ({originalName}), {year}"
         };
 
-        public override string ToString() => Name;
+        public override string ToString() => Print();
 
         public override bool Equals(object? obj)
         {

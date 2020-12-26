@@ -39,6 +39,8 @@ namespace FunBot
             }
         }
 
+        public override string ToString() => Print();
+
         public static bool operator ==(Book? left, Book? right)
         {
             return Equals(left, right);

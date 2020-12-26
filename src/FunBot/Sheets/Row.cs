@@ -49,5 +49,7 @@ namespace FunBot.Sheets
         public string? TryGet(Location location) => Has(location)
             ? Get(location)
             : null;
+
+        public override string ToString() => string.Join(" | ", cells);
     }
 }

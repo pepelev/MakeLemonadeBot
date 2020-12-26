@@ -42,6 +42,7 @@ namespace FunBot.Storage
                 ON shown_movies (state)
                 WHERE state = 'to-be-shown'"
             ),
+
             (
                 Schema.Zero,
                 @"CREATE TABLE books (
@@ -73,6 +74,7 @@ namespace FunBot.Storage
                 ON shown_books (state)
                 WHERE state = 'to-be-shown'"
             ),
+
             (
                 Schema.Zero,
                 @"CREATE TABLE serials (
@@ -106,6 +108,41 @@ namespace FunBot.Storage
                 ON shown_serials (state)
                 WHERE state = 'to-be-shown'"
             ),
+
+            (
+                Schema.Zero,
+                @"CREATE TABLE cartoons (
+                    id TEXT NOT NULL PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    original_name TEXT NOT NULL,
+                    year INT NOT NULL,
+                    note TEXT
+                )"
+            ),
+            (
+                Schema.Zero,
+                @"CREATE TABLE shown_cartoons (
+                    chat_id INT NOT NULL,
+                    cartoon_id INT NOT NULL
+                    REFERENCES cartoons (id)
+                    ON UPDATE CASCADE
+                    ON DELETE CASCADE,
+                    state TEXT NOT NULL,
+                    at TEXT NOT NULL
+                )"
+            ),
+            (
+                Schema.Zero,
+                @"CREATE UNIQUE INDEX shown_cartoons_ids
+                ON shown_cartoons (chat_id, cartoon_id)"
+            ),
+            (
+                Schema.Zero,
+                @"CREATE UNIQUE INDEX to_be_shown_cartoons
+                ON shown_cartoons (state)
+                WHERE state = 'to-be-shown'"
+            ),
+
             (
                 Schema.Zero,
                 @"CREATE TABLE conversations (
