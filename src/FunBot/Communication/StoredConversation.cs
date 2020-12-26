@@ -57,8 +57,9 @@ namespace FunBot.Communication
             {
                 "greeting" => new Greeting(
                     talks.For(chatId, FullKeyboard),
-                    new LazyConversation(() => Selection(user.DailyBudget))
+                    new LazyConversation(FullSelection)
                 ),
+                "fullSelection" => FullSelection(),
                 "selection" => Selection(),
                 "serialSelection" => SerialSelection(),
                 "feedback" => Feedback(
@@ -86,46 +87,52 @@ namespace FunBot.Communication
             "Я передумал"
         );
 
-        private Conversation Selection(int queriesLeft)
+        private Conversation FullSelection() => new FullSelection(
+            Interaction(user.DailyBudget)
+        );
+
+        private Conversation Selection(int queriesLeft) => new Selection(
+            clock.Now,
+            queriesLeft,
+            new LazyConversation(FullSelection),
+            Interaction(queriesLeft),
+            user
+        );
+
+        private Matching<string, Conversation> Interaction(int queriesLeft)
         {
             var talk = talks.For(chatId, FullKeyboard);
             var serialSelectionTalk = talks.For(chatId, SerialKeyboard);
-            return new Selection(
-                clock.Now,
-                queriesLeft,
-                new LazyConversation(() => Selection(5)),
-                new Matching<string, Conversation>(
-                    "Написать нам",
-                    StringComparer.CurrentCultureIgnoreCase,
-                    new WithoutArgument<string, Conversation>(
-                        new FeedbackDialogue(
-                            talks.For(chatId, FeedbackKeyboard),
-                            Feedback(new LazyConversation(() => Selection(queriesLeft)))
-                        )
-                    ),
-                    new Matching<string, Conversation>(
-                        "Сериалы",
-                        StringComparer.CurrentCultureIgnoreCase,
-                        new WithoutArgument<string, Conversation>(
-                            new SerialSelectionDialogue(serialSelectionTalk, new LazyConversation(() => SerialSelection(queriesLeft)))
-                        ),
-                        new Commands(
-                            ImmutableStack.CreateRange(
-                                new (string Command, Content.Collection Collection)[]
-                                {
-                                    ("кино", new Movies(chatId, connection, random, clock)),
-                                    ("книги", new Books(chatId, connection, random, clock))
-                                }
-                            ),
-                            this,
-                            new LazyConversation(() => Selection(queriesLeft - 1)),
-                            new LazyConversation(() => Selection(0)),
-                            talk,
-                            queriesLeft
-                        )
+            return new Matching<string, Conversation>(
+                "Написать нам",
+                StringComparer.CurrentCultureIgnoreCase,
+                new WithoutArgument<string, Conversation>(
+                    new FeedbackDialogue(
+                        talks.For(chatId, FeedbackKeyboard),
+                        Feedback(new LazyConversation(() => Selection(queriesLeft)))
                     )
                 ),
-                user
+                new Matching<string, Conversation>(
+                    "Сериалы",
+                    StringComparer.CurrentCultureIgnoreCase,
+                    new WithoutArgument<string, Conversation>(
+                        new SerialSelectionDialogue(serialSelectionTalk, new LazyConversation(() => SerialSelection(queriesLeft)))
+                    ),
+                    new Commands(
+                        ImmutableStack.CreateRange(
+                            new (string Command, Content.Collection Collection)[]
+                            {
+                                ("кино", new Movies(chatId, connection, random, clock)),
+                                ("книги", new Books(chatId, connection, random, clock))
+                            }
+                        ),
+                        this,
+                        new LazyConversation(() => Selection(queriesLeft - 1)),
+                        new LazyConversation(() => Selection(0)),
+                        talk,
+                        queriesLeft
+                    )
+                )
             );
         }
 
@@ -140,8 +147,8 @@ namespace FunBot.Communication
 
         private Conversation Feedback(Conversation from) => new Feedback(
             talks.For(chatId, FullKeyboard),
-            from
-        );
+            from,
+            "я передумал");
 
         private Conversation Selection()
         {
