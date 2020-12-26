@@ -1,131 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
-using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using FunBot.Collections;
 using FunBot.Jobs;
-using FunBot.Sheets;
 using FunBot.Storage;
 using Serilog;
 
 namespace FunBot.Updates
 {
-    public sealed class SerialsUpdate : Job
+    public sealed class SerialsUpdate : Job<IReadOnlyList<Serial>>
     {
-        private readonly SQLiteConnection connection;
         private readonly ILogger log;
-        private readonly Sheet sheet;
         private readonly CancellationToken token;
+        private readonly SQLiteConnection connection;
 
-        public SerialsUpdate(
-            SQLiteConnection connection,
-            ILogger log,
-            Sheet sheet,
-            CancellationToken token)
+        public SerialsUpdate(ILogger log, CancellationToken token, SQLiteConnection connection)
         {
-            this.connection = connection;
             this.log = log;
             this.token = token;
-            this.sheet = sheet;
+            this.connection = connection;
         }
 
-        public override async Task RunAsync()
+        public override Task RunAsync(IReadOnlyList<Serial> downloaded)
         {
-            var rows = await sheet.RowsAsync(token);
-            if (rows.Count == 0)
-            {
-                log.Warning("Sheet is empty");
-                return;
-            }
-
-            var header = rows[0];
-            var id = header.Find("Идентификатор");
-            var name = header.Find("Название");
-            var originalName = header.Find("Оригинальное название");
-            var year = header.Find("Год");
-            var duration = header.Find("Продолжительность");
-
-            var allFound = id.Found && name.Found && originalName.Found && year.Found && duration.Found;
-            if (!allFound)
-            {
-                log.Warning("Could not find header");
-                return;
-            }
-
-            var downloaded = Parse(rows, id, name, originalName, year, duration);
             var stored = Stored();
-            var join = Full.Join(stored, downloaded, serial => serial.Id);
+            var comparison = Full.Join(stored, downloaded, serial => serial.Id);
             using var transaction = connection.BeginTransaction();
-            foreach (var (key, left, right) in join)
+            try
             {
-                token.ThrowIfCancellationRequested();
-                if (right == null)
+                if (Update(comparison, transaction))
                 {
-                    transaction.Execute(
-                        "DELETE FROM TABLE serials WHERE id = :id",
-                        ("id", key)
-                    );
-                    log.Information("Remove {Key}", key);
-                    continue;
-                }
-
-                if (left != right)
-                {
-                    transaction.Execute(@"
-                    REPLACE INTO serials (id, name, original_name, year, duration)
-                    VALUES (:id, :name, :original_name, :year, :duration)",
-                        ("id", right.Id),
-                        ("name", right.Name),
-                        ("original_name", right.OriginalName),
-                        ("year", right.Year),
-                        ("duration", right.Duration.ToString("G"))
-                    );
-
-                    log.Information("Add or update {Key}", key);
+                    transaction.Commit();
+                    return Task.CompletedTask;
                 }
             }
-
-            transaction.Commit();
-        }
-
-        private IEnumerable<Serial> Parse(
-            IReadOnlyList<Row> rows,
-            Location id,
-            Location name,
-            Location originalName,
-            Location year,
-            Location duration)
-        {
-            var downloaded = new List<Serial>();
-            for (var i = 1; i < rows.Count; i++)
+            catch
             {
-                var row = rows[i];
-                if (row.Has(id) && row.Has(name) && row.Has(originalName) && row.Has(year) && row.Has(duration))
-                {
-                    var serialDuration = row.Get(duration).ToLowerInvariant() switch
-                    {
-                        "короткий" => SerialDuration.Short,
-                        "длинный" => SerialDuration.Long,
-                        _ => throw new NotImplementedException()
-                    };
-                    var book = new Serial(
-                        row.Get(id),
-                        row.Get(name),
-                        row.Get(originalName),
-                        int.Parse(row.Get(year), CultureInfo.InvariantCulture),
-                        serialDuration
-                    );
-                    downloaded.Add(book);
-                }
-                else
-                {
-                    log.Warning("Row {Index} has no id, name or author", i);
-                }
+                transaction.Rollback();
+                throw;
             }
 
-            return downloaded;
+            transaction.Rollback();
+            return Task.CompletedTask;
         }
 
         private IReadOnlyList<Serial> Stored() => connection.Read(@"
@@ -140,5 +58,46 @@ namespace FunBot.Updates
                 Enum.Parse<SerialDuration>(row.String("duration"), true)
             )
         );
+
+        private bool Update(
+            IEnumerable<(string Key, Serial Old, Serial New)> comparison,
+            SQLiteTransaction transaction)
+        {
+            foreach (var (key, old, @new) in comparison)
+            {
+                if (token.IsCancellationRequested)
+                {
+                    log.Information("Cancellation requested");
+                    return false;
+                }
+
+                if (@new == null)
+                {
+                    transaction.Execute(
+                        "DELETE FROM TABLE serials WHERE id = :id",
+                        ("id", key)
+                    );
+                    log.Information("Remove {Serial}", old);
+                    continue;
+                }
+
+                if (old != @new)
+                {
+                    transaction.Execute(@"
+                    REPLACE INTO serials (id, name, original_name, year, duration)
+                    VALUES (:id, :name, :original_name, :year, :duration)",
+                        ("id", @new.Id),
+                        ("name", @new.Name),
+                        ("original_name", @new.OriginalName),
+                        ("year", @new.Year),
+                        ("duration", @new.Duration.ToString("G"))
+                    );
+
+                    log.Information("Replace {OldSerial} with {NewSerial}", old, @new);
+                }
+            }
+
+            return true;
+        }
     }
 }

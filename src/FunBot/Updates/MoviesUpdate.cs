@@ -15,7 +15,7 @@ namespace FunBot.Updates
         private readonly SQLiteConnection connection;
         private readonly CancellationToken token;
 
-        public MoviesUpdate(ILogger log, SQLiteConnection connection, CancellationToken token)
+        public MoviesUpdate(ILogger log, CancellationToken token, SQLiteConnection connection)
         {
             this.log = log;
             this.connection = connection;
@@ -44,6 +44,18 @@ namespace FunBot.Updates
             transaction.Rollback();
             return Task.CompletedTask;
         }
+
+        private IReadOnlyList<Movie> Stored() => connection.Read(@"
+            SELECT id, name, original_name, year
+            FROM `movies`
+            ORDER BY id",
+            row => new Movie(
+                row.String("id"),
+                row.String("name"),
+                row.MaybeString("original_name"),
+                row.MaybeInt("year")
+            )
+        );
 
         private bool Update(
             IEnumerable<(string Key, Movie Old, Movie New)> comparison,
@@ -84,17 +96,5 @@ namespace FunBot.Updates
 
             return true;
         }
-
-        private IReadOnlyList<Movie> Stored() => connection.Read(@"
-            SELECT id, name, original_name, year
-            FROM `movies`
-            ORDER BY id",
-            row => new Movie(
-                row.String("id"),
-                row.String("name"),
-                row.MaybeString("original_name"),
-                row.MaybeInt("year")
-            )
-        );
     }
 }

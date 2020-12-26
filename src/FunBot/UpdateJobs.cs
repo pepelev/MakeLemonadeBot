@@ -37,14 +37,7 @@ namespace FunBot
         public IEnumerator<Job> GetEnumerator()
         {
             yield return Wrap(nameof(MoviesUpdate), Movies());
-
-            var update1 = new SerialsUpdate(
-                connection,
-                log,
-                sheets.Serials,
-                token
-            );
-            yield return Wrap(nameof(SerialsUpdate), update1);
+            yield return Wrap(nameof(SerialsUpdate), Serials());
             yield return Wrap(nameof(BooksUpdate), Books());
         }
 
@@ -64,8 +57,33 @@ namespace FunBot
                             movie => movie.Id,
                             new MoviesUpdate(
                                 log,
-                                connection,
-                                token
+                                token,
+                                connection
+                            )
+                        )
+                    )
+                )
+            );
+        }
+
+        private Job Serials()
+        {
+            return new SheetDownloading(
+                log,
+                sheets.Serials,
+                token,
+                new CancelWatching<IReadOnlyList<Row>>(
+                    log,
+                    token,
+                    new SerialsParsing(
+                        log,
+                        new DuplicateCheck<Serial>(
+                            log,
+                            serial => serial.Id,
+                            new SerialsUpdate(
+                                log,
+                                token,
+                                connection
                             )
                         )
                     )
