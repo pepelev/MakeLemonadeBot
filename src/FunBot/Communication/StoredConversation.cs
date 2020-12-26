@@ -91,8 +91,8 @@ namespace FunBot.Communication
             Interaction(user.DailyBudget)
         );
 
-        private Conversation Selection(int queriesLeft) => new Selection(
-            clock.Now,
+        private Conversation Selection(int queriesLeft, DateTime timestamp) => new Selection(
+            timestamp,
             queriesLeft,
             new LazyConversation(FullSelection),
             Interaction(queriesLeft),
@@ -103,20 +103,29 @@ namespace FunBot.Communication
         {
             var talk = talks.For(chatId, FullKeyboard);
             var serialSelectionTalk = talks.For(chatId, SerialKeyboard);
+            var timestamp = clock.Now;
             return new Matching<string, Conversation>(
                 "Написать нам",
                 StringComparer.CurrentCultureIgnoreCase,
                 new WithoutArgument<string, Conversation>(
                     new FeedbackDialogue(
                         talks.For(chatId, FeedbackKeyboard),
-                        Feedback(new LazyConversation(() => Selection(queriesLeft)))
+                        Feedback(new LazyConversation(() => Selection(queriesLeft, timestamp)))
                     )
                 ),
                 new Matching<string, Conversation>(
                     "Сериалы",
                     StringComparer.CurrentCultureIgnoreCase,
                     new WithoutArgument<string, Conversation>(
-                        new SerialSelectionDialogue(serialSelectionTalk, new LazyConversation(() => SerialSelection(queriesLeft)))
+                        new SerialSelectionDialogue(
+                            serialSelectionTalk,
+                            new LazyConversation(
+                                () => SerialSelection(
+                                    new LazyConversation(() => Selection(queriesLeft, timestamp)),
+                                    new LazyConversation(() => Selection(Math.Max(0, queriesLeft - 1), timestamp))
+                                )
+                            )
+                        )
                     ),
                     new Commands(
                         ImmutableStack.CreateRange(
@@ -127,8 +136,8 @@ namespace FunBot.Communication
                             }
                         ),
                         this,
-                        new LazyConversation(() => Selection(queriesLeft - 1)),
-                        new LazyConversation(() => Selection(0)),
+                        new LazyConversation(() => Selection(queriesLeft - 1, timestamp)),
+                        new LazyConversation(() => Selection(0, timestamp)),
                         talk,
                         queriesLeft
                     )
@@ -136,13 +145,12 @@ namespace FunBot.Communication
             );
         }
 
-        private Conversation SerialSelection(int queriesLeft) => new SerialSelection(
+        private Conversation SerialSelection(Conversation back, Conversation next) => new SerialSelection(
             talks.For(chatId, FullKeyboard),
             new Serials(chatId, SerialDuration.Short, connection, random, clock),
             new Serials(chatId, SerialDuration.Long, connection, random, clock),
-            new LazyConversation(() => Selection(queriesLeft)),
-            new LazyConversation(() => Selection(Math.Max(0, queriesLeft - 1))),
-            queriesLeft
+            back,
+            next
         );
 
         private Conversation Feedback(Conversation from) => new Feedback(
@@ -153,14 +161,14 @@ namespace FunBot.Communication
         private Conversation Selection()
         {
             var left = @object.Get<int>("queriesLeft");
-            return Selection(left);
+            var timestamp = @object.Get<DateTime>("timestamp");
+            return Selection(left, timestamp);
         }
 
-        private Conversation SerialSelection()
-        {
-            var left = @object.Get<int>("queriesLeft");
-            return SerialSelection(left);
-        }
+        private Conversation SerialSelection() => SerialSelection(
+            Navigate("back"),
+            Navigate("next")
+        );
 
         public override async Task<Conversation> AnswerAsync(string query) =>
             await conversation.AnswerAsync(query);

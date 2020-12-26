@@ -6,7 +6,6 @@ namespace FunBot.Communication
 {
     public sealed class SerialSelection : Conversation
     {
-        private readonly int queriesLeft;
         private readonly Content.Collection @long;
         private readonly Content.Collection @short;
         private readonly Talk talk;
@@ -18,15 +17,13 @@ namespace FunBot.Communication
             Content.Collection @short,
             Content.Collection @long,
             Conversation back,
-            Conversation next,
-            int queriesLeft)
+            Conversation next)
         {
             this.talk = talk;
             this.@short = @short;
             this.@long = @long;
             this.back = back;
             this.next = next;
-            this.queriesLeft = queriesLeft;
         }
 
         public override DateTime AskAt => Ask.Never;
@@ -70,7 +67,8 @@ namespace FunBot.Communication
 
         public override JObject Serialize() => new JObject(
             new JProperty("type", "serialSelection"),
-            new JProperty("queriesLeft", queriesLeft)
+            new JProperty("back", back.Serialize()),
+            new JProperty("next", next.Serialize())
         );
     }
 }
