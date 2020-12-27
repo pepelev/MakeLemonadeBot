@@ -72,7 +72,7 @@ namespace FunBot.Updates
                 if (@new == null)
                 {
                     transaction.Execute(
-                        @"DELETE FROM TABLE storeroom WHERE id = :id",
+                        @"DELETE FROM storeroom WHERE id = :id",
                         ("id", key)
                     );
                     log.Information("Remove {Thing}", old);

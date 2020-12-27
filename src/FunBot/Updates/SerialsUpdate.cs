@@ -74,7 +74,7 @@ namespace FunBot.Updates
                 if (@new == null)
                 {
                     transaction.Execute(
-                        "DELETE FROM TABLE serials WHERE id = :id",
+                        "DELETE FROM serials WHERE id = :id",
                         ("id", key)
                     );
                     log.Information("Remove {Serial}", old);
