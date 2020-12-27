@@ -68,7 +68,7 @@ namespace FunBot
             var client = new TelegramBotClient(telegramToken);
             var talks = new TelegramTalks(client);
             var clock = new Utc();
-            Conversation.Collection states = new SqLiteStates(connection, talks, clock, settings.Users);
+            Conversation.Collection states = new SqLiteStates(log, connection, talks, clock, settings.Users);
             Offset offset = new SqLiteOffset(telegramToken, connection);
 
             using var @lock = new SemaphoreSlim(1, 1);
@@ -97,7 +97,8 @@ namespace FunBot
                 ),
                 token
             );
-            var movies = new Cycle(
+            var sources = settings.Sources;
+            var updates = new Cycle(
                 new Catching(
                     new Logging(
                         "Scheduled updates",
@@ -105,7 +106,7 @@ namespace FunBot
                         clock,
                         new Scheduled(
                             clock.Now.Date,
-                            TimeSpan.FromSeconds(5),
+                            sources.UpdatePeriod,
                             token,
                             clock,
                             new Sequential(
@@ -117,7 +118,7 @@ namespace FunBot
                                     connection,
                                     new GoogleSheet.Collection(
                                         sheets,
-                                        settings.Sources
+                                        sources
                                     )
                                 ).ToArray()
                             )
@@ -126,7 +127,7 @@ namespace FunBot
                 ),
                 token
             );
-            var job = new Parallel(listening, movies);
+            var job = new Parallel(listening, updates);
             await job.RunAsync();
             log.Information("Finishing");
         }

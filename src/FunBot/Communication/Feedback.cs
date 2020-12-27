@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using Serilog;
 
 namespace FunBot.Communication
 {
     public sealed class Feedback : Conversation
     {
+        private readonly ILogger log;
         private readonly Talk talk;
         private readonly Conversation back;
         private readonly string stopPhrase;
 
-        public Feedback(Talk talk, Conversation back, string stopPhrase)
+        public Feedback(ILogger log, Talk talk, Conversation back, string stopPhrase)
         {
-            this.back = back;
+            this.log = log;
             this.talk = talk;
+            this.back = back;
             this.stopPhrase = stopPhrase;
         }
 
@@ -25,7 +28,7 @@ namespace FunBot.Communication
                 return back;
             }
 
-            Console.WriteLine($"Feedback {query}");
+            log.Information("Feedback: {Text}", query);
             await talk.SayAsync("Спасибо!");
             return back;
         }

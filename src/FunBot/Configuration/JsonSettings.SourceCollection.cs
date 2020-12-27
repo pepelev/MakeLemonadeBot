@@ -1,4 +1,6 @@
-﻿using FunBot.Json;
+﻿using System;
+using System.Globalization;
+using FunBot.Json;
 using Newtonsoft.Json.Linq;
 
 namespace FunBot.Configuration
@@ -13,6 +15,10 @@ namespace FunBot.Configuration
             {
                 this.@object = @object;
             }
+
+            public override TimeSpan UpdatePeriod => @object.ContainsKey("updatePeriod")
+                ? TimeSpan.Parse(@object.Get<string>("updatePeriod"), CultureInfo.InvariantCulture)
+                : TimeSpan.FromMinutes(15);
 
             public override bool Contains(string name) => @object.ContainsKey(name);
             public override Configuration.Source Get(string name) => new Source(@object.Get<JObject>(name));

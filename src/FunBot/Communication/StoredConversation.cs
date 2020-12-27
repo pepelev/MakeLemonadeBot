@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 using FunBot.Configuration;
 using FunBot.Json;
 using Newtonsoft.Json.Linq;
+using Serilog;
 
 namespace FunBot.Communication
 {
     public sealed class StoredConversation : Conversation
     {
         private readonly long chatId;
+        private readonly ILogger feedbackLog;
         private readonly Clock clock;
         private readonly SQLiteConnection connection;
         private readonly Conversation conversation;
@@ -21,6 +23,7 @@ namespace FunBot.Communication
 
         public StoredConversation(
             long chatId,
+            ILogger feedbackLog,
             Talk.Collection talks,
             Clock clock,
             SQLiteConnection connection,
@@ -34,6 +37,7 @@ namespace FunBot.Communication
             this.connection = connection;
             this.random = random;
             this.@object = @object;
+            this.feedbackLog = feedbackLog;
             this.user = user;
             conversation = new LazyConversation(Parse);
         }
@@ -42,6 +46,7 @@ namespace FunBot.Communication
 
         private Conversation Navigate(string propertyName) => new StoredConversation(
             chatId,
+            feedbackLog,
             talks,
             clock,
             connection,
@@ -162,9 +167,11 @@ namespace FunBot.Communication
         );
 
         private Conversation Feedback(Conversation from) => new Feedback(
+            feedbackLog,
             talks.For(chatId, FullKeyboard),
             from,
-            "я передумал");
+            "я передумал"
+        );
 
         private Conversation Selection()
         {

@@ -9,6 +9,7 @@ using FunBot.Communication;
 using FunBot.Configuration;
 using FunBot.Jobs;
 using Newtonsoft.Json.Linq;
+using Serilog.Core;
 
 namespace FunBot.Tests.Complex
 {
@@ -31,6 +32,7 @@ namespace FunBot.Tests.Complex
             talks = new Talks(chatId);
             this.clock = clock;
             states = new SqLiteStates(
+                Logger.None,
                 connection,
                 talks,
                 clock,

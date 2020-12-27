@@ -5,11 +5,13 @@ using System.Linq;
 using FunBot.Configuration;
 using FunBot.Json;
 using FunBot.Storage;
+using Serilog;
 
 namespace FunBot.Communication
 {
     public sealed class SqLiteStates : Conversation.Collection
     {
+        private readonly ILogger feedbackLog;
         private readonly Clock clock;
         private readonly SQLiteConnection connection;
         private readonly Random random = new Random();
@@ -17,11 +19,13 @@ namespace FunBot.Communication
         private readonly User.Collection users;
 
         public SqLiteStates(
+            ILogger feedbackLog,
             SQLiteConnection connection,
             Talk.Collection talks,
             Clock clock,
             User.Collection users)
         {
+            this.feedbackLog = feedbackLog;
             this.connection = connection;
             this.talks = talks;
             this.clock = clock;
@@ -74,6 +78,7 @@ namespace FunBot.Communication
             var @object = content.AsJsonObject();
             return new StoredConversation(
                 chatId,
+                feedbackLog.ForContext("ChatId", chatId),
                 talks,
                 clock,
                 connection,
