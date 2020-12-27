@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,8 @@ using Google.Apis.Sheets.v4;
 using Google.Apis.Util.Store;
 using Newtonsoft.Json.Linq;
 using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.Telegram;
 using Telegram.Bot;
 using Parallel = FunBot.Jobs.Parallel;
 
@@ -54,21 +57,37 @@ namespace FunBot
                 }
             );
 
+
             var configuration = new LoggerConfiguration();
             const string template = "{Timestamp:HH:mm:ss} [{Level:u3}] {Message} {Properties}{NewLine}{Exception}";
             using var log = configuration
                 .WriteTo.File("FunBot.log", outputTemplate: template)
                 .WriteTo.Console(outputTemplate: template)
+                .WriteTo.Telegram(
+                    settings.Telegram.Log.Token,
+                    settings.Telegram.Log.ChatId,
+                    Render,
+                    LogEventLevel.Warning
+                )
                 .Enrich.FromLogContext()
+                .CreateLogger();
+
+            using var feedbackLog = new LoggerConfiguration()
+                .WriteTo.Telegram(
+                    settings.Telegram.Feedback.Token,
+                    settings.Telegram.Feedback.ChatId,
+                    Render
+                )
+                .WriteTo.Logger(log)
                 .CreateLogger();
 
             using var connection = new SqLiteConnectionFactory("Data Source=s.db;Version=3;New=True;").Create();
 
-            var telegramToken = settings.Telegram.Token;
+            var telegramToken = settings.Telegram.Listening.Token;
             var client = new TelegramBotClient(telegramToken);
             var talks = new TelegramTalks(client);
             var clock = new Utc();
-            Conversation.Collection states = new SqLiteStates(log, connection, talks, clock, settings.Users);
+            Conversation.Collection states = new SqLiteStates(feedbackLog, connection, talks, clock, settings.Users);
             Offset offset = new SqLiteOffset(telegramToken, connection);
 
             using var @lock = new SemaphoreSlim(1, 1);
@@ -136,6 +155,38 @@ namespace FunBot
         {
             using var file = File.OpenRead("google-credentials.json");
             return GoogleClientSecrets.Load(file).Secrets;
+        }
+
+        private static Serilog.Sinks.Telegram.TelegramMessage Render(LogEvent @event)
+        {
+            var header = $"{@event.Level}: {@event.MessageTemplate.Text}";
+            var properties = string.Join(
+                "\n",
+                @event.Properties.Select(
+                    pair =>
+                    {
+                        var value = pair.Value.ToString(null, CultureInfo.InvariantCulture);
+                        return $"{pair.Key} = {value}";
+                    }
+                )
+            );
+            var exception = @event.Exception;
+            if (exception != null)
+            {
+                var exceptionText = string.Join(
+                    "\n",
+                    exception.Message,
+                    exception.StackTrace
+                );
+
+                return new Serilog.Sinks.Telegram.TelegramMessage(
+                    string.Join("\n\n", header, properties, exceptionText)
+                );
+            }
+
+            return new Serilog.Sinks.Telegram.TelegramMessage(
+                string.Join("\n\n", header, properties)
+            );
         }
     }
 }

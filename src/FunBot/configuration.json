@@ -1,6 +1,16 @@
 {
   "telegram": {
-    "token": "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
+    "listening": {
+      "token": "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
+    },
+    "feedback": {
+      "token": "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+      "chatId": "111111"
+    },
+    "log": {
+      "token": "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
+      "chatId": "111111"
+    }
   },
   "sources": {
     "updatePeriod": "01:00",
