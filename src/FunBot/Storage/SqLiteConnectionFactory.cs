@@ -145,6 +145,39 @@ namespace FunBot.Storage
 
             (
                 Schema.Zero,
+                @"CREATE TABLE storeroom (
+                    id TEXT NOT NULL PRIMARY KEY,
+                    content TEXT NOT NULL,
+                    description TEXT,
+                    category TEXT
+                )"
+            ),
+            (
+                Schema.Zero,
+                @"CREATE TABLE shown_things (
+                    chat_id INT NOT NULL,
+                    thing_id INT NOT NULL
+                    REFERENCES storeroom (id)
+                    ON UPDATE CASCADE
+                    ON DELETE CASCADE,
+                    state TEXT NOT NULL,
+                    at TEXT NOT NULL
+                )"
+            ),
+            (
+                Schema.Zero,
+                @"CREATE UNIQUE INDEX shown_things_ids
+                ON shown_things (chat_id, thing_id)"
+            ),
+            (
+                Schema.Zero,
+                @"CREATE UNIQUE INDEX to_be_shown_things
+                ON shown_things (state)
+                WHERE state = 'to-be-shown'"
+            ),
+
+            (
+                Schema.Zero,
                 @"CREATE TABLE conversations (
                     chat_id INT PRIMARY KEY,
                     content TEXT NOT NULL,

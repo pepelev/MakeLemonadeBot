@@ -47,7 +47,11 @@ namespace FunBot.Tests.Complex
                         new Row("12", "Стоя под радугой", "Фэнни Флэгг"),
                         new Row("13", "Дживс и Вустер", "П. Г. Вудхауз")
                     ),
-                    new ConstSheet()
+                    new ConstSheet(),
+                    new ConstSheet(
+                        new Row("Идентификатор", "Ссылка", "Описание", "Категория"),
+                        new Row("1", "https://chaos.band/issues/1/flea", "", "текст")
+                    )
                 )
             );
 
@@ -78,6 +82,16 @@ namespace FunBot.Tests.Complex
                 "Фэнни Флэгг - Стоя под радугой",
                 "П. Г. Вудхауз - Дживс и Вустер"
             );
+        }
+
+        [Test]
+        public async Task Offer_Thing()
+        {
+            await context.FeedAsync("/hello");
+
+            var replies = await context.FeedAsync("Кладовая");
+
+            replies.Single().Should().Be("https://chaos.band/issues/1/flea\n\nтекст");
         }
 
         [Test]

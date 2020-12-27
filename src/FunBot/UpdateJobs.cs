@@ -40,6 +40,7 @@ namespace FunBot
             yield return Wrap(nameof(SerialsUpdate), Serials());
             yield return Wrap(nameof(BooksUpdate), Books());
             yield return Wrap(nameof(CartoonsUpdate), Cartoons());
+            yield return Wrap(nameof(StoreroomUpdate), Storeroom());
         }
 
         private Job Movies()
@@ -105,7 +106,7 @@ namespace FunBot
                         log,
                         new DuplicateCheck<Book>(
                             log,
-                            movie => movie.Id,
+                            book => book.Id,
                             new BooksUpdate(
                                 log,
                                 token,
@@ -130,8 +131,33 @@ namespace FunBot
                         log,
                         new DuplicateCheck<Cartoon>(
                             log,
-                            movie => movie.Id,
+                            cartoon => cartoon.Id,
                             new CartoonsUpdate(
+                                log,
+                                token,
+                                connection
+                            )
+                        )
+                    )
+                )
+            );
+        }
+
+        private Job Storeroom()
+        {
+            return new SheetDownloading(
+                log,
+                sheets.Storeroom,
+                token,
+                new CancelWatching<IReadOnlyList<Row>>(
+                    log,
+                    token,
+                    new ThingsParsing(
+                        log,
+                        new DuplicateCheck<Thing>(
+                            log,
+                            movie => movie.Id,
+                            new StoreroomUpdate(
                                 log,
                                 token,
                                 connection

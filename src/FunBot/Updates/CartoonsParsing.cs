@@ -46,14 +46,14 @@ namespace FunBot.Updates
                     if (row.Has(id) && row.Has(name) && row.Has(year))
                     {
                         var cartoonName = row.Get(name);
-                        var movie = new Cartoon(
+                        var cartoon = new Cartoon(
                             row.Get(id),
                             cartoonName,
                             row.TryGet(originalName) ?? cartoonName,
                             int.Parse(row.Get(year), CultureInfo.InvariantCulture),
                             row.TryGet(note)
                         );
-                        result.Add(movie);
+                        result.Add(cartoon);
                     }
                     else
                     {

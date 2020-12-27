@@ -105,7 +105,7 @@ namespace FunBot
                         clock,
                         new Scheduled(
                             clock.Now.Date,
-                            TimeSpan.FromMinutes(1),
+                            TimeSpan.FromSeconds(5),
                             token,
                             clock,
                             new Sequential(

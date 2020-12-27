@@ -52,18 +52,18 @@ namespace FunBot.Updates
                             "длинный" => SerialDuration.Long,
                             _ => throw new NotImplementedException()
                         };
-                        var book = new Serial(
+                        var serial = new Serial(
                             row.Get(id),
                             row.Get(name),
                             row.Get(originalName),
                             int.Parse(row.Get(year), CultureInfo.InvariantCulture),
                             serialDuration
                         );
-                        result.Add(book);
+                        result.Add(serial);
                     }
                     else
                     {
-                        log.Warning("Row {Index} has no id, name or author", i);
+                        log.Warning("Row {Index} has no id, name, original name, year, or duration", i);
                     }
                 }
 

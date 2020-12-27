@@ -78,7 +78,7 @@ namespace FunBot.Communication
             "Сериалы",
             "Мультфильмы",
             "Книги",
-            //"Кладовая",
+            "Кладовая",
             "Написать нам"
         );
 
@@ -139,7 +139,8 @@ namespace FunBot.Communication
                             {
                                 ("кино", new Movies(chatId, connection, random, clock)),
                                 ("книги", new Books(chatId, connection, random, clock)),
-                                ("мультфильмы", new Cartoons(chatId, connection, random, clock))
+                                ("мультфильмы", new Cartoons(chatId, connection, random, clock)),
+                                ("кладовая", new Storeroom(chatId, connection, random, clock))
                             }
                         ),
                         this,

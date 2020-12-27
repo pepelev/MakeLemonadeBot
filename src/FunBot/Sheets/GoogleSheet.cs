@@ -44,6 +44,7 @@ namespace FunBot.Sheets
             public override Sheet Serials => Sheet("serials");
             public override Sheet Books => Sheet("books");
             public override Sheet Cartoons => Sheet("cartoons");
+            public override Sheet Storeroom => Sheet("storeroom");
 
             private Sheet Sheet(string section)
             {

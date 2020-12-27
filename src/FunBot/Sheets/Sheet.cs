@@ -14,6 +14,7 @@ namespace FunBot.Sheets
             public abstract Sheet Serials { get; }
             public abstract Sheet Books { get; }
             public abstract Sheet Cartoons { get; }
+            public abstract Sheet Storeroom { get; }
         }
     }
 }
