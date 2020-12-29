@@ -19,7 +19,7 @@ namespace FunBot.Communication
         private readonly JObject @object;
         private readonly Random random;
         private readonly Talk.Collection talks;
-        private readonly User user;
+        private readonly Settings settings;
 
         public StoredConversation(
             long chatId,
@@ -28,7 +28,7 @@ namespace FunBot.Communication
             Clock clock,
             SQLiteConnection connection,
             Random random,
-            User user,
+            Settings settings,
             JObject @object)
         {
             this.chatId = chatId;
@@ -37,8 +37,8 @@ namespace FunBot.Communication
             this.connection = connection;
             this.random = random;
             this.@object = @object;
+            this.settings = settings;
             this.feedbackLog = feedbackLog;
-            this.user = user;
             conversation = new LazyConversation(Parse);
         }
 
@@ -51,7 +51,7 @@ namespace FunBot.Communication
             clock,
             connection,
             random,
-            user,
+            settings,
             @object.Get<JObject>(propertyName)
         );
 
@@ -62,6 +62,7 @@ namespace FunBot.Communication
             {
                 "greeting" => new Greeting(
                     talks.For(chatId, FullKeyboard),
+                    settings.Phrases,
                     new LazyConversation(() => new ActiveFeedback.Bootstrap(FullSelection()))
                 ),
                 "fullSelection" => FullSelection(),
@@ -97,7 +98,7 @@ namespace FunBot.Communication
         );
 
         private Conversation FullSelection() => new FullSelection(
-            Interaction(user.DailyBudget)
+            Interaction(settings.Users.Get(chatId).DailyBudget)
         );
 
         private Conversation Selection(int queriesLeft, DateTime timestamp) => new Selection(
@@ -105,7 +106,7 @@ namespace FunBot.Communication
             queriesLeft,
             new LazyConversation(FullSelection),
             Interaction(queriesLeft),
-            user
+            settings.Users.Get(chatId)
         );
 
         private Matching<string, Conversation> Interaction(int queriesLeft)

@@ -16,20 +16,20 @@ namespace FunBot.Communication
         private readonly SQLiteConnection connection;
         private readonly Random random = new Random();
         private readonly Talk.Collection talks;
-        private readonly User.Collection users;
+        private readonly Settings settings;
 
         public SqLiteStates(
             ILogger feedbackLog,
             SQLiteConnection connection,
             Talk.Collection talks,
             Clock clock,
-            User.Collection users)
+            Settings settings)
         {
             this.feedbackLog = feedbackLog;
             this.connection = connection;
             this.talks = talks;
             this.clock = clock;
-            this.users = users;
+            this.settings = settings;
         }
 
         public override Conversation Get(long chatId)
@@ -83,7 +83,7 @@ namespace FunBot.Communication
                 clock,
                 connection,
                 random,
-                users.Get(chatId),
+                settings,
                 @object
             );
         }

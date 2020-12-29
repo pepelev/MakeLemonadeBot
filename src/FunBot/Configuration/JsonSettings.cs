@@ -23,5 +23,26 @@ namespace FunBot.Configuration
         public override User.Collection Users => new UserCollection(
             @object.Get<JObject>("users")
         );
+
+        public override Phrases Phrases
+        {
+            get
+            {
+                var phrases = @object.Get("phrases", new JObject());
+                return new PhraseCollection(phrases);
+            }
+        }
+
+        private sealed class PhraseCollection : Phrases
+        {
+            private readonly JObject @object;
+
+            public PhraseCollection(JObject @object)
+            {
+                this.@object = @object;
+            }
+
+            public override string Greeting => @object.Get("greeting", "Привет, это отличный бот");
+        }
     }
 }

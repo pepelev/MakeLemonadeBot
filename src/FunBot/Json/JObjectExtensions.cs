@@ -23,5 +23,9 @@ namespace FunBot.Json
 
             throw new KeyNotFoundException($"Property {propertyName} not found in object {@object}");
         }
+
+        public static T Get<T>(this JObject @object, string propertyName, T reserve) => @object.ContainsKey(propertyName)
+            ? @object.Value<T>(propertyName)
+            : reserve;
     }
 }

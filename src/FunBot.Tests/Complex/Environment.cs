@@ -40,7 +40,7 @@ namespace FunBot.Tests.Complex
                     new JObject(
                         new JProperty("users", new JObject())
                     )
-                ).Users
+                )
             );
             source = new Source(this, chatId);
             sut = new Listening(
