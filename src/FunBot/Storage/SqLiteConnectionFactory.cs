@@ -193,6 +193,16 @@ namespace FunBot.Storage
             ),
             (
                 Schema.Zero,
+                @"CREATE TABLE messages (
+                    id INT NOT NULL,
+                    chat_id INT NOT NULL,
+                    date TEXT NOT NULL,
+                    text TEXT NOT NULL,
+                    author TEXT NOT NULL
+                )"
+            ),
+            (
+                Schema.Zero,
                 @"REPLACE INTO schema (subject, version)
                 VALUES ('root', 'Initial')"
             )

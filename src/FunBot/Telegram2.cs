@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FunBot.Collections;
 using FunBot.Communication;
+using FunBot.Storage;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 
@@ -41,8 +43,15 @@ namespace FunBot
                 limit: 20,
                 cancellationToken: token
             );
+
+            var textUpdates = updates
+                .Where(update => !string.IsNullOrWhiteSpace(update.Message.Text))
+                .ToList();
+
+            StoreMessages(textUpdates);
+
             return new ProjectingReadOnlyList<Telegram.Bot.Types.Update, Update>(
-                updates,
+                textUpdates,
                 update => new TelegramUpdate(
                     new TelegramMessage(update),
                     connection,
@@ -50,6 +59,27 @@ namespace FunBot
                     botToken
                 )
             );
+        }
+
+        private void StoreMessages(IEnumerable<Telegram.Bot.Types.Update> textUpdates)
+        {
+            using var transaction = connection.BeginTransaction();
+            foreach (var update in textUpdates)
+            {
+                var message = update.Message;
+                var chat = message.Chat;
+                transaction.Execute(
+                    @"INSERT INTO messages (id, chat_id, date, text, author)
+                        VALUES (:id, :chat_id, :date, :text, :author)",
+                    ("id", update.Id),
+                    ("chat_id", chat.Id),
+                    ("date", message.Date.ToString("O")),
+                    ("text", message.Text),
+                    ("author", $"{chat.FirstName} {chat.LastName} {chat.Description}")
+                );
+            }
+
+            transaction.Commit();
         }
     }
 }
