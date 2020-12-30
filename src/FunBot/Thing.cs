@@ -20,7 +20,7 @@ namespace FunBot
 
         public string Print() => string.Join(
             "\n\n",
-            new[] {Content, Description, Category}.Where(@string => !string.IsNullOrEmpty(@string))
+            new[] {Content, Description}.Where(@string => !string.IsNullOrEmpty(@string))
         );
 
         public override string ToString() => Print();
