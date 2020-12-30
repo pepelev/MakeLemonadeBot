@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Serilog;
 
-namespace FunBot.Communication
+namespace MakeLemonadeBot.Communication
 {
     public sealed class Feedback : Conversation
     {

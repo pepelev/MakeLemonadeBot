@@ -1,9 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using FunBot.Communication;
-using FunBot.Jobs;
+using MakeLemonadeBot.Communication;
+using MakeLemonadeBot.Jobs;
 
-namespace FunBot
+namespace MakeLemonadeBot
 {
     public sealed class Listening : Job
     {

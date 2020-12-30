@@ -1,4 +1,4 @@
-﻿namespace FunBot.Configuration
+﻿namespace MakeLemonadeBot.Configuration
 {
     public abstract class User
     {

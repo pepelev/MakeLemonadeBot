@@ -5,23 +5,23 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using FunBot.Communication;
-using FunBot.Configuration;
-using FunBot.Jobs;
-using FunBot.Sheets;
-using FunBot.Storage;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Util.Store;
+using MakeLemonadeBot.Communication;
+using MakeLemonadeBot.Configuration;
+using MakeLemonadeBot.Jobs;
+using MakeLemonadeBot.Sheets;
+using MakeLemonadeBot.Storage;
 using Newtonsoft.Json.Linq;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.Telegram;
 using Telegram.Bot;
-using Parallel = FunBot.Jobs.Parallel;
+using Parallel = MakeLemonadeBot.Jobs.Parallel;
 
-namespace FunBot
+namespace MakeLemonadeBot
 {
     public sealed class EntryPoint
     {

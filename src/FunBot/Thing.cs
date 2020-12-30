@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace FunBot
+namespace MakeLemonadeBot
 {
     public sealed class Thing : IEquatable<Thing>
     {

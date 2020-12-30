@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FunBot\FunBot.csproj" />
+    <ProjectReference Include="..\FunBot\MakeLemonadeBot.csproj" />
   </ItemGroup>
 
 </Project>

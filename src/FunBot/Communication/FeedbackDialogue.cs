@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace FunBot.Communication
+namespace MakeLemonadeBot.Communication
 {
     public sealed class FeedbackDialogue : Interaction<None, Conversation>
     {

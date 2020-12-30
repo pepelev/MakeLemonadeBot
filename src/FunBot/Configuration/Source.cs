@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FunBot.Configuration
+namespace MakeLemonadeBot.Configuration
 {
     public abstract class Source
     {

@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Threading;
-using FunBot.Jobs;
-using FunBot.Sheets;
-using FunBot.Updates;
+using MakeLemonadeBot.Jobs;
+using MakeLemonadeBot.Sheets;
+using MakeLemonadeBot.Updates;
 using Serilog;
 
-namespace FunBot
+namespace MakeLemonadeBot
 {
     public sealed class UpdateJobs : IEnumerable<Job>
     {

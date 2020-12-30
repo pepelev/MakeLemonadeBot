@@ -3,12 +3,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Extensions;
-using FunBot.Sheets;
-using FunBot.Storage;
+using MakeLemonadeBot.Sheets;
+using MakeLemonadeBot.Storage;
 using NUnit.Framework;
 using Serilog.Core;
 
-namespace FunBot.Tests.Complex
+namespace MakeLemonadeBot.Tests.Complex
 {
     public class EasyTest
     {

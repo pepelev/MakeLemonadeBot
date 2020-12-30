@@ -1,6 +1,6 @@
-﻿using FunBot.Sheets;
+﻿using MakeLemonadeBot.Sheets;
 
-namespace FunBot.Tests.Complex
+namespace MakeLemonadeBot.Tests.Complex
 {
     public sealed class ConstSheets : Sheet.Collection
     {

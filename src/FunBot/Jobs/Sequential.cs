@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace FunBot.Jobs
+namespace MakeLemonadeBot.Jobs
 {
     public sealed class Sequential : Job
     {

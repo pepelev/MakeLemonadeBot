@@ -4,7 +4,7 @@ using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace FunBot.Json
+namespace MakeLemonadeBot.Json
 {
     public static class JObjectExtensions
     {

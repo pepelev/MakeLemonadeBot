@@ -1,6 +1,6 @@
-﻿using FunBot.Communication;
+﻿using MakeLemonadeBot.Communication;
 
-namespace FunBot
+namespace MakeLemonadeBot
 {
     public abstract class Update
     {

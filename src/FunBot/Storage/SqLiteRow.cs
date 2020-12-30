@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data.SQLite;
 
-namespace FunBot.Storage
+namespace MakeLemonadeBot.Storage
 {
     public sealed class SqLiteRow
     {

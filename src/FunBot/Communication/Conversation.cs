@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-namespace FunBot.Communication
+namespace MakeLemonadeBot.Communication
 {
     public abstract class Conversation
     {

@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace FunBot.Jobs
+namespace MakeLemonadeBot.Jobs
 {
     public sealed class Cycle : Job
     {

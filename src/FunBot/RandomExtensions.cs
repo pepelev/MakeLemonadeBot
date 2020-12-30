@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FunBot
+namespace MakeLemonadeBot
 {
     public static class RandomExtensions
     {

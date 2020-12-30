@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Threading;
 using System.Threading.Tasks;
-using FunBot.Collections;
-using FunBot.Jobs;
-using FunBot.Storage;
+using MakeLemonadeBot.Collections;
+using MakeLemonadeBot.Jobs;
+using MakeLemonadeBot.Storage;
 using Serilog;
 
-namespace FunBot.Updates
+namespace MakeLemonadeBot.Updates
 {
     public sealed class SerialsUpdate : Job<IReadOnlyList<Serial>>
     {

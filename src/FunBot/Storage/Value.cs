@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FunBot.Storage
+namespace MakeLemonadeBot.Storage
 {
     public abstract class Value
     {

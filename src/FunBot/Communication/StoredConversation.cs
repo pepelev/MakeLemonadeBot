@@ -2,12 +2,12 @@
 using System.Collections.Immutable;
 using System.Data.SQLite;
 using System.Threading.Tasks;
-using FunBot.Configuration;
-using FunBot.Json;
+using MakeLemonadeBot.Configuration;
+using MakeLemonadeBot.Json;
 using Newtonsoft.Json.Linq;
 using Serilog;
 
-namespace FunBot.Communication
+namespace MakeLemonadeBot.Communication
 {
     public sealed class StoredConversation : Conversation
     {

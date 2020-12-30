@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace FunBot.Sheets
+namespace MakeLemonadeBot.Sheets
 {
     public abstract class Sheet
     {

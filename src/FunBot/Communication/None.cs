@@ -1,4 +1,4 @@
-﻿namespace FunBot.Communication
+﻿namespace MakeLemonadeBot.Communication
 {
     public struct None
     {

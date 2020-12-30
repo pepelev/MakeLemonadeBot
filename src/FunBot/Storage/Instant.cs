@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace FunBot.Storage
+namespace MakeLemonadeBot.Storage
 {
     public sealed class Instant : Value
     {

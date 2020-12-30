@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FunBot.Jobs;
+using MakeLemonadeBot.Jobs;
 using Serilog;
 
-namespace FunBot.Updates
+namespace MakeLemonadeBot.Updates
 {
     public sealed class DuplicateCheck<T> : Job<IReadOnlyList<T>>
     {

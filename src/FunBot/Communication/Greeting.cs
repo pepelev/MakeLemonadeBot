@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using FunBot.Configuration;
+using MakeLemonadeBot.Configuration;
 using Newtonsoft.Json.Linq;
 
-namespace FunBot.Communication
+namespace MakeLemonadeBot.Communication
 {
     public sealed class Greeting : Conversation
     {

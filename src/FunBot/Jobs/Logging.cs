@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Serilog;
 using Serilog.Context;
 
-namespace FunBot.Jobs
+namespace MakeLemonadeBot.Jobs
 {
     public sealed class Logging : Job
     {

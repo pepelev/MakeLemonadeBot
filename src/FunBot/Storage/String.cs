@@ -1,4 +1,4 @@
-﻿namespace FunBot.Storage
+﻿namespace MakeLemonadeBot.Storage
 {
     public sealed class String : Value
     {

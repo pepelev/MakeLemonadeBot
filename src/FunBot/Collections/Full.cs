@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FunBot.Collections
+namespace MakeLemonadeBot.Collections
 {
     public static class Full
     {

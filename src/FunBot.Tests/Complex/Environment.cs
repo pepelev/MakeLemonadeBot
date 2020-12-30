@@ -5,13 +5,13 @@ using System.Data.SQLite;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FunBot.Communication;
-using FunBot.Configuration;
-using FunBot.Jobs;
+using MakeLemonadeBot.Communication;
+using MakeLemonadeBot.Configuration;
+using MakeLemonadeBot.Jobs;
 using Newtonsoft.Json.Linq;
 using Serilog.Core;
 
-namespace FunBot.Tests.Complex
+namespace MakeLemonadeBot.Tests.Complex
 {
     public sealed class Environment
     {
@@ -151,7 +151,7 @@ namespace FunBot.Tests.Complex
                 queries = queries.Enqueue(query);
             }
 
-            private sealed class Message : FunBot.Message
+            private sealed class Message : MakeLemonadeBot.Message
             {
                 private readonly Source source;
 

@@ -1,4 +1,4 @@
-﻿namespace FunBot
+﻿namespace MakeLemonadeBot
 {
     public sealed class TelegramCredentials
     {

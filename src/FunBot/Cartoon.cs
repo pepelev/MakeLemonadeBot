@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Globalization;
 
-namespace FunBot
+namespace MakeLemonadeBot
 {
     public sealed class Cartoon : IEquatable<Cartoon>
     {

@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
-using FunBot.Jobs;
-using FunBot.Sheets;
+using MakeLemonadeBot.Jobs;
+using MakeLemonadeBot.Sheets;
 using Serilog;
 
-namespace FunBot.Updates
+namespace MakeLemonadeBot.Updates
 {
     public sealed class SerialsParsing : Job<IReadOnlyList<Row>>
     {

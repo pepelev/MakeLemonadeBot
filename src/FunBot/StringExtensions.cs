@@ -3,7 +3,7 @@ using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace FunBot
+namespace MakeLemonadeBot
 {
     public static class StringExtensions
     {

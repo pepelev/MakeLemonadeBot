@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SQLite;
 
-namespace FunBot.Storage
+namespace MakeLemonadeBot.Storage
 {
     public static class SqLiteExtensions
     {

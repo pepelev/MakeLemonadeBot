@@ -1,9 +1,8 @@
-using NUnit.Framework;
 using System;
-using System.Linq;
-using FunBot.Collections;
+using MakeLemonadeBot.Collections;
+using NUnit.Framework;
 
-namespace FunBot.Tests
+namespace MakeLemonadeBot.Tests
 {
     public class Tests
     {

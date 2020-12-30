@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FunBot.Collections
+namespace MakeLemonadeBot.Collections
 {
     public static class EnumerableExtensions
     {

@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Serilog;
 
-namespace FunBot.Jobs
+namespace MakeLemonadeBot.Jobs
 {
     public sealed class CancelWatching<T> : Job<T>
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FunBot.Tests.Complex
+namespace MakeLemonadeBot.Tests.Complex
 {
     public sealed class TestClock : Clock
     {

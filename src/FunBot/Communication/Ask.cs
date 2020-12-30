@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FunBot.Communication
+namespace MakeLemonadeBot.Communication
 {
     public static class Ask
     {

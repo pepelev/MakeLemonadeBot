@@ -1,4 +1,4 @@
-﻿namespace FunBot.Sheets
+﻿namespace MakeLemonadeBot.Sheets
 {
     public readonly struct Location
     {

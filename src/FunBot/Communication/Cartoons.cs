@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
-using FunBot.Storage;
+using MakeLemonadeBot.Storage;
 
-namespace FunBot.Communication
+namespace MakeLemonadeBot.Communication
 {
     public sealed class Cartoons : Content.Collection
     {

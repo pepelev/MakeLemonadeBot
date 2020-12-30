@@ -1,4 +1,4 @@
-﻿namespace FunBot
+﻿namespace MakeLemonadeBot
 {
     public enum SerialDuration
     {

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Data.SQLite;
 using System.Threading.Tasks;
-using FunBot.Communication;
-using FunBot.Json;
-using FunBot.Storage;
+using MakeLemonadeBot.Communication;
+using MakeLemonadeBot.Json;
+using MakeLemonadeBot.Storage;
 using Newtonsoft.Json.Linq;
 
-namespace FunBot
+namespace MakeLemonadeBot
 {
     public abstract class Message
     {

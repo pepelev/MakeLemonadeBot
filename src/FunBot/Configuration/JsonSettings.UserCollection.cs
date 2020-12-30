@@ -1,8 +1,8 @@
 ﻿using System.Globalization;
-using FunBot.Json;
+using MakeLemonadeBot.Json;
 using Newtonsoft.Json.Linq;
 
-namespace FunBot.Configuration
+namespace MakeLemonadeBot.Configuration
 {
     public sealed partial class JsonSettings
     {

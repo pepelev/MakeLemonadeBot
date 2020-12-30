@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
-using FunBot.Configuration;
-using FunBot.Json;
-using FunBot.Storage;
+using MakeLemonadeBot.Configuration;
+using MakeLemonadeBot.Json;
+using MakeLemonadeBot.Storage;
 using Serilog;
 
-namespace FunBot.Communication
+namespace MakeLemonadeBot.Communication
 {
     public sealed class SqLiteStates : Conversation.Collection
     {

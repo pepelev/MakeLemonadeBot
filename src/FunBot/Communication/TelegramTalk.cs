@@ -1,9 +1,9 @@
 ﻿using System.Data.SQLite;
 using System.Threading.Tasks;
-using FunBot.Storage;
+using MakeLemonadeBot.Storage;
 using Telegram.Bot;
 
-namespace FunBot.Communication
+namespace MakeLemonadeBot.Communication
 {
     public sealed class TelegramTalk : Talk
     {

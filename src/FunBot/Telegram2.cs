@@ -3,13 +3,13 @@ using System.Data.SQLite;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FunBot.Collections;
-using FunBot.Communication;
-using FunBot.Storage;
+using MakeLemonadeBot.Collections;
+using MakeLemonadeBot.Communication;
+using MakeLemonadeBot.Storage;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 
-namespace FunBot
+namespace MakeLemonadeBot
 {
     public sealed class Telegram2 : UpdateSource
     {

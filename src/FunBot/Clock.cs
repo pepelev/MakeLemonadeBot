@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FunBot
+namespace MakeLemonadeBot
 {
     public abstract class Clock
     {

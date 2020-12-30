@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FunBot
+namespace MakeLemonadeBot
 {
     public sealed class Serial : IEquatable<Serial>
     {

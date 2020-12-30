@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
 
-namespace FunBot.Storage
+namespace MakeLemonadeBot.Storage
 {
     public class SqLiteConnectionFactory
     {
