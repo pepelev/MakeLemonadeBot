@@ -117,6 +117,17 @@ namespace FunBot
                 token
             );
             var sources = settings.Sources;
+            var updateJobs = new UpdateJobs(
+                token,
+                @lock,
+                log,
+                clock,
+                connection,
+                new GoogleSheet.Collection(
+                    sheets,
+                    sources
+                )
+            );
             var updates = new Cycle(
                 new Catching(
                     new Logging(
@@ -129,24 +140,24 @@ namespace FunBot
                             token,
                             clock,
                             new Sequential(
-                                new UpdateJobs(
-                                    token,
-                                    @lock,
-                                    log,
-                                    clock,
-                                    connection,
-                                    new GoogleSheet.Collection(
-                                        sheets,
-                                        sources
-                                    )
-                                ).ToArray()
+                                updateJobs
                             )
                         )
                     )
                 ),
                 token
             );
-            var job = new Parallel(listening, updates);
+            var job = new Sequential(
+                new Catching(
+                    new Logging(
+                        "Initial updates",
+                        log,
+                        clock,
+                        new Sequential(updateJobs)
+                    )
+                ),
+                new Parallel(listening, updates)
+            );
             await job.RunAsync();
             log.Information("Finishing");
         }

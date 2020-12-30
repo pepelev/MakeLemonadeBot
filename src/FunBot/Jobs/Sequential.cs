@@ -1,12 +1,19 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FunBot.Jobs
 {
     public sealed class Sequential : Job
     {
-        private readonly Job[] jobs;
+        private readonly IEnumerable<Job> jobs;
 
         public Sequential(params Job[] jobs)
+            : this(jobs.AsEnumerable())
+        {
+        }
+
+        public Sequential(IEnumerable<Job> jobs)
         {
             this.jobs = jobs;
         }
