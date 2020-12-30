@@ -254,5 +254,16 @@ namespace FunBot.Tests.Complex
 
             replies.Should().BeEquivalentTo("Я не понял тебя");
         }
+
+        [Test]
+        public async Task Serials_Are_Bounded()
+        {
+            await context.FeedAsync("/hello");
+            await context.FeedAsync(5, "кино");
+
+            var replies = await context.FeedAsync("сериалы");
+
+            replies.Should().BeEquivalentTo("На сегодня это все, приходи завтра");
+        }
     }
 }

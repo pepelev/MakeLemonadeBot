@@ -128,13 +128,18 @@ namespace FunBot.Communication
                 new Matching<string, Conversation>(
                     "Сериалы",
                     StringComparer.CurrentCultureIgnoreCase,
-                    new WithoutArgument<string, Conversation>(
-                        new SerialSelectionDialogue(
-                            serialSelectionTalk,
-                            new LazyConversation(
-                                () => SerialSelection(
-                                    new LazyConversation(() => Selection(queriesLeft, timestamp)),
-                                    new LazyConversation(() => Selection(Math.Max(0, queriesLeft - 1), timestamp))
+                    new Limited<string>(
+                        queriesLeft,
+                        talk,
+                        new LazyConversation(() => Selection(0, timestamp)),
+                        new WithoutArgument<string, Conversation>(
+                            new SerialSelectionDialogue(
+                                serialSelectionTalk,
+                                new LazyConversation(
+                                    () => SerialSelection(
+                                        new LazyConversation(() => Selection(queriesLeft, timestamp)),
+                                        new LazyConversation(() => Selection(Math.Max(0, queriesLeft - 1), timestamp))
+                                    )
                                 )
                             )
                         )
