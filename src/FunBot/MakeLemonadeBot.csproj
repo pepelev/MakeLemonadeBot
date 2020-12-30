@@ -6,6 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <OutputPath>..\..\bin</OutputPath>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Google.Apis.Sheets.v4" Version="1.49.0.2134" />
     <PackageReference Include="Serilog" Version="2.10.0" />
