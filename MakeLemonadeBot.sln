@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MakeLemonadeBot", "src\FunBot\MakeLemonadeBot.csproj", "{27B0043B-3711-4CAB-9D41-BD2876AD898A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MakeLemonadeBot", "src\MakeLemonadeBot\MakeLemonadeBot.csproj", "{27B0043B-3711-4CAB-9D41-BD2876AD898A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MakeLemonadeBot.Tests", "src\FunBot.Tests\MakeLemonadeBot.Tests.csproj", "{E6041E46-5BFE-4009-A597-41E7B695D7B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MakeLemonadeBot.Tests", "src\MakeLemonadeBot.Tests\MakeLemonadeBot.Tests.csproj", "{E6041E46-5BFE-4009-A597-41E7B695D7B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
