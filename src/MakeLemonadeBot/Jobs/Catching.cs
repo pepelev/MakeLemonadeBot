@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace MakeLemonadeBot.Jobs
 {
@@ -19,7 +20,7 @@ namespace MakeLemonadeBot.Jobs
             }
             catch
             {
-                // intentionally left blank
+                await Task.Delay(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
             }
         }
     }

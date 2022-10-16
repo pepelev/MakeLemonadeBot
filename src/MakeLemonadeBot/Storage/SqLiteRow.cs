@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SQLite;
+using System.Globalization;
 
 namespace MakeLemonadeBot.Storage
 {
@@ -12,7 +13,13 @@ namespace MakeLemonadeBot.Storage
             this.reader = reader;
         }
 
-        public string String(string column) => (string) reader[column];
+        public string String(string column) => reader[column] switch
+        {
+            string @string => @string,
+            int @int => @int.ToString(CultureInfo.InvariantCulture),
+            long @long => @long.ToString(CultureInfo.InvariantCulture),
+            var any => throw new InvalidOperationException($"Unexpected {any?.GetType()} {any}")
+        };
 
         public string? MaybeString(string column) => reader[column] switch
         {
