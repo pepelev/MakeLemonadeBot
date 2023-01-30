@@ -86,7 +86,7 @@ namespace MakeLemonadeBot
             var telegramToken = settings.Telegram.Listening.Token;
             var client = new TelegramBotClient(telegramToken);
             var clock = new Utc();
-            var talks = new TelegramTalks(client, connection, clock);
+            var talks = new TelegramTalks(client, connection, clock, log);
             Conversation.Collection states = new SqLiteStates(feedbackLog, connection, talks, clock, settings);
             Offset offset = new SqLiteOffset(telegramToken, connection);
 

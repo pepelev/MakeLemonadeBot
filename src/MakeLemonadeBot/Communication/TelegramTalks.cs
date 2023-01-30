@@ -1,4 +1,5 @@
 ﻿using System.Data.SQLite;
+using Serilog;
 using Telegram.Bot;
 
 namespace MakeLemonadeBot.Communication
@@ -8,12 +9,14 @@ namespace MakeLemonadeBot.Communication
         private readonly ITelegramBotClient client;
         private readonly SQLiteConnection connection;
         private readonly Clock clock;
+        private readonly ILogger log;
 
-        public TelegramTalks(ITelegramBotClient client, SQLiteConnection connection, Clock clock)
+        public TelegramTalks(ITelegramBotClient client, SQLiteConnection connection, Clock clock, ILogger log)
         {
             this.client = client;
             this.connection = connection;
             this.clock = clock;
+            this.log = log;
         }
 
         public override Talk For(long chatId, Keyboard keyboard) => new TelegramTalk(
@@ -21,7 +24,8 @@ namespace MakeLemonadeBot.Communication
             keyboard,
             client,
             connection,
-            clock
+            clock,
+            log
         );
     }
 }
